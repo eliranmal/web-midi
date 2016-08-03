@@ -67,12 +67,12 @@
                 domUpdateDecorator(w.actions.opacity, w.dom.faderControl);
                 break;
             case 73: // knob on bottom left
-                domUpdateDecorator(w.actions.rotate, null);
+                domUpdateDecorator(w.actions.rotate);
                 break;
             //case 74: // knob on top left
             //    break;
             case 113: // loop button
-                domUpdateDecorator(w.actions.switchBackground, null);
+                domUpdateDecorator(w.actions.switchBackground);
                 break;
         }
     }
