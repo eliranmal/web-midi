@@ -1,0 +1,68 @@
+body {
+    margin: 0;
+    padding: 0;
+    font: bold 12px/3 sans-serif;
+    letter-spacing: 1.5px;
+    color: #999;
+    /* default state */
+    /* opacity: 0; */
+    /*
+    background-image: url('http://subtlepatterns.com/patterns/crissXcross.png');
+    background-image: url('http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png');
+    */
+    background-image: url('http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/sativa.png');
+}
+
+.wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.fake-height {
+    width: 1px;
+    height: 10000px;
+}
+
+#test-controls {}
+
+#test-controls label,
+#test-controls input {
+    width: 50px;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+}
+
+#test-controls label {
+    float: left;
+    text-align: center;
+}
+
+#bend-control,
+#mod-control,
+#fader-control {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+}
+
+.block {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.block:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em;
+}
+
+.centered {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: normal;
+}

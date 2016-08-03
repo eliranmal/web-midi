@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>midi</title>
+    <link href="styles/midi.css" rel="stylesheet" >
+</head>
+<body>
+<div class="wrapper block">
+    <div id="test-controls" class="centered">
+        <label>bend
+            <input type="range" min="0" max="127" value="64" id="bend-control"/>
+        </label>
+        <label>mod
+            <input type="range" min="0" max="127" value="0" id="mod-control"/>
+        </label>
+        <label></label>
+        <label>fader
+            <!-- <input type="range" min="0" max="127" value="0" id="fader-control" /> -->
+            <input type="range" min="0" max="127" value="127" id="fader-control"/>
+        </label>
+    </div>
+</div>
+<div class="fake-height"></div>
+
+<script src="src/midi.js"></script>
+</body>
+</html>
