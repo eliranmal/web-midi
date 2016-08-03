@@ -26,27 +26,31 @@ body {
     height: 10000px;
 }
 
-#test-controls {}
+
+#test-controls {
+    height: 60%;
+}
 
 #test-controls label,
 #test-controls input {
-    width: 50px;
-    height: 100px;
+    width: 80px;
     margin: 0;
     padding: 0;
 }
 
 #test-controls label {
-    float: left;
+    display: inline-block;
+    height: 100%;
     text-align: center;
 }
 
-#bend-control,
-#mod-control,
-#fader-control {
+#test-controls input[type="range"] {
+    height: calc(100% - 3em);
     -webkit-appearance: slider-vertical;
-    writing-mode: bt-lr;
 }
+
+
+/* helpers */
 
 .block {
     text-align: center;
