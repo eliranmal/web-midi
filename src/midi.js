@@ -29,43 +29,58 @@
         note = data[1];
         velocity = data[2];
 
-        switch (type) {
-            case 144: // note on
-                switch (note) {
-                    case 48: // C-4
-                        //midiMessageDecorator(onKeyC4, null, velocity);
-                        break;
-                }
-                break;
-            case 128: // note off
-                break;
-            case 224: // pitch bend
-                midiMessageDecorator(w.actions.continuousRelativeScroll, w.dom.bendControl, velocity);
-                break;
-            case 176: // faders, knobs, pitch/mod
-                switch (note) {
-                    case 1: // modulation wheel
-                        midiMessageDecorator(w.actions.absoluteScroll, w.dom.modControl, velocity);
-                        break;
-                    case 73: // knob on bottom left
-                        w.actions.rotate(velocity);
-                        break;
-                    case 74: // knob on top left
-                        midiMessageDecorator(w.actions.opacity, w.dom.faderControl, velocity);
-                        break;
-                    case 113: // loop button
-                        midiMessageDecorator(w.actions.switchBackground, null, velocity);
-                        break;
-                }
-                break;
-        }
+        typeController();
 
         w.utils.log('key data [channel: ' + channel + ', cmd: ' + cmd + ', type: ' + type + ' , note: ' + note + ' , velocity: ' + velocity + ']');
     }
 
-    function midiMessageDecorator(onHandler, controlEl, vel) {
-        onHandler(vel);
-        controlEl && (controlEl.value = vel);
+    function typeController() {
+        switch (type) {
+            case 144: // note on
+                noteOnController();
+                break;
+            //case 128: // note off
+            //    break;
+            case 224: // pitch bend
+                domUpdateDecorator(w.actions.continuousRelativeScroll, w.dom.bendControl);
+                break;
+            case 176: // range controls
+                rangeController();
+                break;
+        }
+    }
+
+    function noteOnController() {
+        switch (note) {
+            case 48: // C-4
+                //midiMessageDecorator(onKeyC4, null, velocity);
+                break;
+        }
+    }
+
+    function rangeController() {
+        switch (note) {
+            case 1: // modulation wheel
+                domUpdateDecorator(w.actions.absoluteScroll, w.dom.modControl);
+                break;
+            case 7: // volume fader
+                domUpdateDecorator(w.actions.opacity, w.dom.faderControl);
+                break;
+            case 73: // knob on bottom left
+                domUpdateDecorator(w.actions.rotate, null);
+                break;
+            //case 74: // knob on top left
+            //    break;
+            case 113: // loop button
+                domUpdateDecorator(w.actions.switchBackground, null);
+                break;
+        }
+    }
+
+
+    function domUpdateDecorator(actionFn, controlEl) {
+        actionFn(velocity);
+        controlEl && (controlEl.value = velocity);
     }
 
     function onStateChange(event) {
