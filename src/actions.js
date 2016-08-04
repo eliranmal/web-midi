@@ -6,7 +6,7 @@
         w.actions = {
 
         rotate: function (vel) {
-            w.dom.controlsContainer.style.webkitTransform = 'rotate(' + (360 / 127 * vel) + 'deg)';
+            w.dom.virtualController.style.webkitTransform = 'rotate(' + (360 / 127 * vel) + 'deg)';
         },
 
         absoluteScroll: function (vel) {

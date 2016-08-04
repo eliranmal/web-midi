@@ -1,9 +1,10 @@
 (function (w, d) {
 
-    var bendControlEl = d.getElementById('bend-control'),
-        modControlEl = d.getElementById('mod-control'),
-        faderControlEl = d.getElementById('fader-control'),
-        testControlsEl = d.getElementById('test-controls');
+    var virtualControllerDisplayEl = d.querySelector('.virtual-controller .display'),
+        bendControlEl = d.querySelector('#bend-control'),
+        modControlEl = d.querySelector('#mod-control'),
+        volControlEl = d.querySelector('#vol-control'),
+        virtualControllerEl = d.querySelector('#virtual-controller');
 
 
     bendControlEl.addEventListener('input', function (e) {
@@ -14,8 +15,8 @@
         w.actions.absoluteScroll(modControlEl.value);
     });
 
-    faderControlEl.addEventListener('input', function (e) {
-        w.actions.opacity(faderControlEl.value);
+    volControlEl.addEventListener('input', function (e) {
+        w.actions.opacity(volControlEl.value);
     });
 
     // simulate the physical control:
@@ -27,10 +28,11 @@
     });
 
     w.dom = {
-        controlsContainer: testControlsEl,
+        virtualController: virtualControllerEl,
         bendControl: bendControlEl,
         modControl: modControlEl,
-        faderControl: faderControlEl
+        volControl: volControlEl,
+        virtualControllerDisplay: virtualControllerDisplayEl
     };
 
 })(window, document);

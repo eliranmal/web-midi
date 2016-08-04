@@ -31,7 +31,9 @@
 
         typeController();
 
-        w.utils.log('key data [channel: ' + channel + ', cmd: ' + cmd + ', type: ' + type + ' , note: ' + note + ' , velocity: ' + velocity + ']');
+        var message = 'channel: ' + channel + ', cmd: ' + cmd + ', type: ' + type + '\n' + 'note: ' + note + ', velocity: ' + velocity;
+        w.utils.log(message);
+        print(message);
     }
 
     function typeController() {
@@ -64,7 +66,7 @@
                 domUpdateDecorator(w.actions.absoluteScroll, w.dom.modControl);
                 break;
             case 7: // volume fader
-                domUpdateDecorator(w.actions.opacity, w.dom.faderControl);
+                domUpdateDecorator(w.actions.opacity, w.dom.volControl);
                 break;
             case 73: // knob on bottom left
                 domUpdateDecorator(w.actions.rotate);
@@ -96,5 +98,11 @@
     function onMIDIFailure(e) {
         w.utils.log('No access to MIDI devices or your browser does not support WebMIDI API. Please use WebMIDIAPIShim ' + e);
     }
+
+    function print(message) {
+        var el = w.dom.virtualControllerDisplay;
+        el && (el.textContent = message);
+    }
+
 
 })(window, document);

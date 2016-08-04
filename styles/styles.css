@@ -1,8 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font: bold 12px/3 sans-serif;
-    letter-spacing: 1.5px;
+    font: bold 14px/2 monospace;
     color: #999;
     /* default state */
     /* opacity: 0; */
@@ -11,6 +10,12 @@ body {
     background-image: url('http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png');
     */
     background-image: url('http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/sativa.png');
+}
+
+div,
+pre {
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .wrapper {
@@ -24,29 +29,113 @@ body {
 .fake-height {
     width: 1px;
     height: 10000px;
+    /*background: rainbow;*/
 }
 
 
-#test-controls {
+/* virtual midi controller */
+
+.virtual-controller {
     height: 60%;
+    min-height: 400px;
+    min-width: 1180px;
 }
 
-#test-controls label,
-#test-controls input {
-    width: 80px;
+.virtual-controller > div {
+    padding: 1em;
+    height: 50%;
+}
+
+.virtual-controller > div > * {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.virtual-controller > div > div > div {
+    height: 50%;
+}
+
+
+.virtual-controller > div .keys > div {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.virtual-controller > div .keys .white {
+    width: 50px;
+    height: 100%;
+    background-color: #fff;
+}
+
+.virtual-controller > div .keys .black {
+    position: relative;
+    top: -40%;
+    left: -25px;
+    width: 40px;
+    height: 60%;
+    background-color: #ccc;
+}
+
+.virtual-controller > div .keys .black + .white {
+    margin-left: -48px;
+}
+
+
+.virtual-controller label,
+.virtual-controller input {
+    width: 64px;
     margin: 0;
     padding: 0;
 }
 
-#test-controls label {
+.virtual-controller label {
     display: inline-block;
     height: 100%;
     text-align: center;
 }
 
-#test-controls input[type="range"] {
+.virtual-controller input[type="range"] {
     height: calc(100% - 3em);
     -webkit-appearance: slider-vertical;
+}
+
+
+.virtual-controller .display {
+    display: inline-block;
+    width: 380px;
+    height: calc(100% - 70px);
+    margin-bottom: 10px;
+    border: 3px solid;
+    padding: 1em;
+    vertical-align: middle;
+    font: 17px/2 monospace;
+    color: #fff;
+    background-color: #ccc;
+}
+
+
+.virtual-controller .transport {
+    height: 60px;    
+}
+
+.virtual-controller .transport > div {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 3px solid #ccc;
+    line-height: 3;
+    cursor: pointer;
+}
+
+.virtual-controller .pads > div > div {
+    display: inline-block;
+    width: 90px;
+    height: calc(100% - 10px);
+    background-color: #ccc;
+    cursor: pointer;
 }
 
 
