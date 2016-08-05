@@ -3,16 +3,17 @@
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
-        w.actions = {
-
-        rotate: function (vel) {
-            w.dom.virtualController.style.webkitTransform = 'rotate(' + (360 / 127 * vel) + 'deg)';
-        },
+    w.actions = {
 
         absoluteScroll: function (vel) {
             var docHeight = d.body.offsetHeight,
-                y = Math.floor(docHeight - (docHeight / 127 * vel));
-            // w.utils.log('y', y);
+                y = w.utils.fromMidiRange({
+                    scale: docHeight,
+                    velocity: vel,
+                    reverse: true,
+                    round: true
+                });
+            //w.utils.log('y', y);
             w.scrollTo(0, y);
         },
 
@@ -40,10 +41,35 @@
                 })();
             }
         },
-        opacity: function (vel) {
-            var opacity = +(1 / 127 * vel).toFixed(3);
-            // w.utils.log('opacity', opacity);
-            d.body.style.opacity = opacity;
+
+        rotate: function (vel, el) {
+            var degrees = w.utils.fromMidiRange({
+                scale: 360,
+                velocity: vel,
+                round: true
+            });
+            //w.utils.log('degrees', degrees);
+            _bodyFallback(el).style.webkitTransform = 'rotate(' + degrees + 'deg)';
+        },
+
+        opacity: function (vel, el) {
+            var opacity = w.utils.fromMidiRange({
+                scale: 1,
+                velocity: vel,
+                trim: 3
+            });
+            //w.utils.log('opacity', opacity);
+            _bodyFallback(el).style.opacity = opacity;
+        },
+
+        saturate: function (vel, el) {
+            var saturation = w.utils.fromMidiRange({
+                scale: 100,
+                velocity: vel,
+                trim: 0
+            });
+            //w.utils.log('saturation', saturation);
+            _bodyFallback(el).style.filter = '(' + saturation + '%)';
         },
 
         switchBackground: function (vel) {
@@ -55,6 +81,10 @@
             }
             d.body.style.backgroundImage = 'url("' + imageUrl + '")';
         }
+    }
+
+    function _bodyFallback(el) {
+        return el || d.body;
     }
 
 })(window, document);

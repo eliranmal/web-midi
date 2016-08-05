@@ -1,38 +1,51 @@
 (function (w, d) {
 
-    var virtualControllerDisplayEl = d.querySelector('.virtual-controller .display'),
-        bendControlEl = d.querySelector('#bend-control'),
-        modControlEl = d.querySelector('#mod-control'),
-        volControlEl = d.querySelector('#vol-control'),
-        virtualControllerEl = d.querySelector('#virtual-controller');
+    var virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
+        bendControl = d.querySelector('#bend-control'),
+        modControl = d.querySelector('#mod-control'),
+        volControl = d.querySelector('#vol-control'),
+        virtualController = d.querySelector('.virtual-controller'),
+        padControlNodes = [].slice.call(d.querySelectorAll('.pads > div > div')),
+        knobControlNodes = [].slice.call(d.querySelectorAll('.knobs input'));
+    // todo - tie transport buttons, too (and knobs!, and keys!!!)
 
 
-    bendControlEl.addEventListener('input', function (e) {
-        w.actions.continuousRelativeScroll(bendControlEl.value);
+    bendControl.addEventListener('input', function (e) {
+        w.actions.continuousRelativeScroll(bendControl.value);
     });
 
-    modControlEl.addEventListener('input', function (e) {
-        w.actions.absoluteScroll(modControlEl.value);
+    modControl.addEventListener('input', function (e) {
+        w.actions.absoluteScroll(modControl.value);
     });
 
-    volControlEl.addEventListener('input', function (e) {
-        w.actions.opacity(volControlEl.value);
+    volControl.addEventListener('input', function (e) {
+        w.actions.opacity(volControl.value);
     });
 
-    // simulate the physical control:
+    padControlNodes.forEach(function (node, index, collection) {
+        node.addEventListener('click', function (e) { // todo - mouseup/mousedown
+            console.log(node);
+            // todo - do some cool stuff
+            e.stopPropagation();
+        });
+    });
+
+    // mimic the pitchbend physical control behavior:
     // jump to middle position when leaving mouse button on the bend slider
     d.addEventListener('mouseup', function (e) {
-        if (e.target === bendControlEl) {
-            w.actions.continuousRelativeScroll(bendControlEl.value = 64);
+        if (e.target === bendControl) {
+            w.actions.continuousRelativeScroll(bendControl.value = 64);
         }
     });
 
     w.dom = {
-        virtualController: virtualControllerEl,
-        bendControl: bendControlEl,
-        modControl: modControlEl,
-        volControl: volControlEl,
-        virtualControllerDisplay: virtualControllerDisplayEl
+        virtualController: virtualController,
+        bendControl: bendControl,
+        modControl: modControl,
+        volControl: volControl,
+        padControls: padControlNodes,
+        knobControls: knobControlNodes,
+        virtualControllerDisplay: virtualControllerDisplay
     };
 
 })(window, document);

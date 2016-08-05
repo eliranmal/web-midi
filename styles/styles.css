@@ -104,7 +104,7 @@ pre {
 .virtual-controller .display {
     display: inline-block;
     width: 380px;
-    height: calc(100% - 70px);
+    height: calc(100% - 60px);
     margin-bottom: 10px;
     border: 3px solid;
     padding: 1em;
@@ -116,7 +116,7 @@ pre {
 
 
 .virtual-controller .transport {
-    height: 60px;    
+    height: 50px;
 }
 
 .virtual-controller .transport > div {
@@ -130,10 +130,19 @@ pre {
     cursor: pointer;
 }
 
+.virtual-controller .pads > div {
+    height: calc(50% - 5px);
+}
+
+.virtual-controller .pads > div:not(*:last-child) {
+    margin-bottom: 10px;
+}
+
 .virtual-controller .pads > div > div {
     display: inline-block;
     width: 90px;
-    height: calc(100% - 10px);
+    /*height: calc(100% - 10px);*/
+    height: 100%;
     background-color: #ccc;
     cursor: pointer;
 }
