@@ -3,6 +3,16 @@
     var volume;
     var midi, data, cmd, channel, type, note, velocity;
 
+    var padMap = [
+        50, 45, 51, 49, 36, 38, 42, 46
+    ];
+    var keyMap = (function () {
+        var range = [];
+        for (var i = 0; i < 25; i++) {
+             range[i] = i + 48;
+        }
+        return range;
+    })();
 
     if (navigator.requestMIDIAccess) {
         navigator.requestMIDIAccess({
@@ -149,11 +159,8 @@
     function noteOnController() {
         if (channel == 9) {
             padController();
-        }
-        switch (note) {
-            case 48: // C-4
-                //midiMessageDecorator(onKeyC4, null, velocity);
-                break;
+        } else if (channel == 0) {
+            keyController();
         }
     }
 
@@ -161,39 +168,17 @@
         //if (velocity == 0) {
         //    return; // ignore 0 velocity - the pad's 'note-off' does that
         //}
-        switch (note) {
-            case 50: // pad 1
-                padDomUpdateDecorator(0);
-                break;
-            case 45: // pad 2
-                padDomUpdateDecorator(1);
-                break;
-            case 51: // pad 3
-                padDomUpdateDecorator(2);
-                break;
-            case 49: // pad 4
-                padDomUpdateDecorator(3);
-                break;
-            case 36: // pad 5
-                padDomUpdateDecorator(4);
-                break;
-            case 38: // pad 6
-                padDomUpdateDecorator(5);
-                break;
-            case 42: // pad 7
-                padDomUpdateDecorator(6);
-                break;
-            case 46: // pad 8
-                padDomUpdateDecorator(7);
-                break;
-        }
+
+        var targetEl = w.dom.padControls[padMap.indexOf(note)];
+        domUpdateDecorator({
+            actionFn: w.actions.opacity,
+            targetEl: targetEl,
+            reverseVelocity: true
+        });
     }
-    
-    function padDomUpdateDecorator(padIndex) {
-        var targetEl = w.dom.padControls[padIndex];
-        if (volume == 0) {
-            targetEl = d.body;
-        }
+
+    function keyController() {
+        var targetEl = w.dom.keyControls[keyMap.indexOf(note)];
         domUpdateDecorator({
             actionFn: w.actions.opacity,
             targetEl: targetEl,
