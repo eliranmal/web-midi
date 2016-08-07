@@ -36,9 +36,9 @@ pre {
 /* virtual midi controller */
 
 .virtual-controller {
-    height: 60%;
-    min-height: 400px;
-    min-width: 1180px;
+    height: 400px;
+    width: 1180px;
+    -webkit-user-select: none;
 }
 
 .virtual-controller > div {
@@ -71,13 +71,14 @@ pre {
     position: relative;
 }
 .virtual-controller > div .keys .white {
-    z-index: -1;
+    z-index: 0;
     width: 50px;
     height: 100%;
     background-color: #fff;
 }
 
 .virtual-controller > div .keys .black {
+    z-index: 1;
     top: -40%;
     left: -25px;
     width: 40px;

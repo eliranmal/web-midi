@@ -57,7 +57,7 @@
             case 224: // pitch bend
                 domUpdateDecorator({
                     actionFn: w.actions.continuousRelativeScroll,
-                    inputControlEl: w.dom.bendControl
+                    feedbackEl: w.dom.bendControl
                 });
 
                 break;
@@ -93,63 +93,64 @@
                 volume = velocity;
                 domUpdateDecorator({
                     actionFn: w.actions.opacity,
-                    inputControlEl: w.dom.volControl
+                    feedbackEl: w.dom.volControl
                 });
                 break;
+
 
             case 74: // knob 1
                 domUpdateDecorator({
                     actionFn: w.actions.rotate,
-                    inputControlEl: w.dom.knobControls[0],
+                    feedbackEl: w.dom.knobControls[0],
                     targetEl: w.dom.virtualController
                 });
                 break;
             case 71: // knob 2
                 domUpdateDecorator({
-                    actionFn: null,
-                    inputControlEl: w.dom.knobControls[1],
-                    targetEl: null
+                    actionFn: w.actions.scale,
+                    feedbackEl: w.dom.knobControls[1],
+                    targetEl: w.dom.virtualController
                 });
                 break;
             case 91: // knob 3
                 domUpdateDecorator({
-                    actionFn: null,
-                    inputControlEl: w.dom.knobControls[2],
-                    targetEl: null
+                    actionFn: w.actions.translateX,
+                    feedbackEl: w.dom.knobControls[2],
+                    targetEl: w.dom.virtualController
                 });
                 break;
             case 93: // knob 4
                 domUpdateDecorator({
-                    actionFn: null,
-                    inputControlEl: w.dom.knobControls[3],
-                    targetEl: null
+                    actionFn: w.actions.translateY,
+                    feedbackEl: w.dom.knobControls[3],
+                    targetEl: w.dom.virtualController
                 });
                 break;
             case 73: // knob 5
                 domUpdateDecorator({
                     actionFn: null,
-                    inputControlEl: w.dom.knobControls[4],
+                    feedbackEl: w.dom.knobControls[4],
                     targetEl: null
                 });
                 break;
             case 72: // knob 6
                 domUpdateDecorator({
                     actionFn: null,
-                    inputControlEl: w.dom.knobControls[5],
+                    feedbackEl: w.dom.knobControls[5],
                     targetEl: null
                 });
                 break;
             case 5:  // knob 7
                 domUpdateDecorator({
                     actionFn: null,
-                    inputControlEl: w.dom.knobControls[6],
+                    feedbackEl: w.dom.knobControls[6],
                     targetEl: null
                 });
                 break;
             case 84: // knob 8
                 domUpdateDecorator({
                     actionFn: null,
-                    inputControlEl: w.dom.knobControls[7],
+                    feedbackEl: w.dom.knobControls[7],
                     targetEl: null
                 });
                 break;
@@ -194,7 +195,7 @@
             vel = 127 - velocity;
         }
         options.actionFn && options.actionFn(vel, options.targetEl);
-        options.inputControlEl && (options.inputControlEl.value = vel);
+        options.feedbackEl && (options.feedbackEl.value = vel);
     }
 
     function onStateChange(event) {

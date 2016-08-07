@@ -5,9 +5,10 @@
         modControl = d.querySelector('#mod-control'),
         volControl = d.querySelector('#vol-control'),
         virtualController = d.querySelector('.virtual-controller'),
-        padControlNodes = [].slice.call(d.querySelectorAll('.pads > div > div')),
-        keyControlNodes = [].slice.call(d.querySelectorAll('.keys > div')),
-        knobControlNodes = [].slice.call(d.querySelectorAll('.knobs input'));
+        transportControls = [].slice.call(d.querySelectorAll('.transport > div')),
+        padControls = [].slice.call(d.querySelectorAll('.pads > div > div')),
+        keyControls = [].slice.call(d.querySelectorAll('.keys > div')),
+        knobControls = [].slice.call(d.querySelectorAll('.knobs input'));
     // todo - tie transport buttons, too (and knobs!, and keys!!!)
 
 
@@ -23,6 +24,22 @@
         w.actions.opacity(volControl.value);
     });
 
+    knobControls[0].addEventListener('input', function (e) {
+        w.actions.rotate(knobControls[0].value, virtualController);
+    });
+
+    knobControls[1].addEventListener('input', function (e) {
+        w.actions.scale(knobControls[1].value, virtualController);
+    });
+
+    knobControls[2].addEventListener('input', function (e) {
+        w.actions.translateX(knobControls[2].value, virtualController);
+    });
+
+    knobControls[3].addEventListener('input', function (e) {
+        w.actions.translateY(knobControls[3].value, virtualController);
+    });
+
     // mimic the pitchbend physical control behavior:
     // jump to middle position when leaving mouse button on the bend slider
     d.addEventListener('mouseup', function (e) {
@@ -31,9 +48,9 @@
         }
     });
 
-    addOpacityMouseListener(padControlNodes);
-
-    addOpacityMouseListener(keyControlNodes);
+    addOpacityMouseListener(padControls);
+    addOpacityMouseListener(keyControls);
+    addOpacityMouseListener(transportControls);
 
 
     function addOpacityMouseListener(nodes) {
@@ -52,9 +69,10 @@
         bendControl: bendControl,
         modControl: modControl,
         volControl: volControl,
-        padControls: padControlNodes,
-        knobControls: knobControlNodes,
-        keyControls: keyControlNodes,
+        transportControls: transportControls,
+        padControls: padControls,
+        knobControls: knobControls,
+        keyControls: keyControls,
         virtualControllerDisplay: virtualControllerDisplay
     };
 
