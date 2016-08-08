@@ -1,6 +1,6 @@
 (function (w, d) {
 
-    function _absoluteScroll(velocity) {
+    function _modulation(velocity) {
         var docHeight = d.body.offsetHeight,
             y = w.utils.fromMidiRange({
                 scale: docHeight,
@@ -12,10 +12,10 @@
         w.scrollTo(0, y);
     }
 
-    function _continuousRelativeScroll(velocity) {
+    function _pitchBend(velocity) {
         w.dom.startContinuousRelativeScroll({
             velocity: velocity,
-            mean: 64
+            mean: 64 // todo - redundant?
         });
     }
 
@@ -34,7 +34,7 @@
         });
     }
 
-    function _scale(vel, el) {
+    function _zoom(vel, el) {
         var scaleValue = w.utils.fromMidiRange({
             scale: 5,
             velocity: vel
@@ -89,11 +89,19 @@
         });
     }
 
-    function _setBackgroundColor(elIndex) {
-        var colorIndex = (elIndex % w.constants.rainbowColors.length);
+    function _setBackgroundColor(velocity, el, elIndex) {
+        var colorIndex = (elIndex % w.constants.rainbowColors.length),
+            color;
+
+        if (velocity === 0) {
+            color = 'transparent';
+        } else {
+            color = w.constants.rainbowColors[colorIndex];
+        }
+
         w.dom.setBackgroundColor({
-            el: w.dom.wrapper,
-            color: w.constants.rainbowColors[colorIndex]
+            el: el,
+            color: color
         });
     }
 
@@ -114,40 +122,46 @@
         });
     }
 
-    function _translateX(vel, el) {
+    function _panX(vel, el) {
         _translate(vel, el, 'X');
     }
 
-    function _translateY(vel, el) {
+    function _panY(vel, el) {
         _translate(vel, el, 'Y');
     }
 
 
     function key(options={}) {
-        var elIndex = options.elIndex || w.constants.keyMappings.indexOf(options.note),
-            targetEl = w.dom.keyControls[elIndex];
 
-        options.velocity = w.utils.reverseMidiRange(options.velocity);
+        var reversed = w.utils.reverseMidiRange(options.velocity),
+            elIndex = options.elIndex,
+            targetEl;
+
+        if (w.utils.isUndefined(elIndex)) {
+            elIndex = w.constants.keyMappings.indexOf(options.note);
+        }
+
+        targetEl = w.dom.keyControls[elIndex];
 
         //if (options.domEcho) {
         //}
-        _setOpacity(options.velocity, targetEl);
-        _setOpacity(options.velocity, w.dom.wrapper);
-        _setBackgroundColor(elIndex);
+        _setOpacity(reversed, targetEl);
+
+        _setBackgroundColor(options.velocity, w.dom.overlay, elIndex);
     }
 
 
     w.commands = {
-        absoluteScroll: _absoluteScroll,
-        continuousRelativeScroll: _continuousRelativeScroll,
         rotate: _rotate,
-        scale: _scale,
-        translateX: _translateX,
-        translateY: _translateY,
+        zoom: _zoom,
+        panX: _panX,
+        panY: _panY,
         opacity: _setOpacity,
         saturate: _saturate,
         switchBackground: _switchBackground,
 
+        modulation: _modulation,
+        pitchBend: _pitchBend,
         key: key
     };
 

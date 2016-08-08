@@ -22,11 +22,16 @@
          return 127 - value;
     }
 
+    function isUndefined(value) {
+        return typeof value === 'undefined';
+    }
+
 
     w.utils = {
         log: log,
         fromMidiRange: fromMidiRange,
-        reverseMidiRange: reverseMidiRange
+        reverseMidiRange: reverseMidiRange,
+        isUndefined: isUndefined
     };
 
 })(window);

@@ -4,12 +4,14 @@
     var midi, data, cmd, channel, type, note, velocity;
     
 
-    if (navigator.requestMIDIAccess) {
-        navigator.requestMIDIAccess({
-            sysex: false
-        }).then(onMIDISuccess, onMIDIFailure);
-    } else {
-        alert('No MIDI support in your browser.');
+    function init() {
+        if (navigator.requestMIDIAccess) {
+            navigator.requestMIDIAccess({
+                sysex: false
+            }).then(onMIDISuccess, onMIDIFailure);
+        } else {
+            alert('No MIDI support in your browser.');
+        }
     }
 
 
@@ -46,7 +48,7 @@
             //    break;
             case 224: // pitch bend
                 domUpdateDecorator({
-                    actionFn: w.commands.continuousRelativeScroll,
+                    actionFn: w.commands.pitchBend,
                     feedbackEl: w.dom.bendControl
                 });
 
@@ -75,7 +77,7 @@
         switch (note) {
             case 1: // modulation wheel
                 domUpdateDecorator({
-                    actionFn: w.commands.absoluteScroll,
+                    actionFn: w.commands.modulation,
                     targetEl: w.dom.modControl
                 });
                 break;
@@ -97,21 +99,21 @@
                 break;
             case 71: // knob 2
                 domUpdateDecorator({
-                    actionFn: w.commands.scale,
+                    actionFn: w.commands.zoom,
                     feedbackEl: w.dom.knobControls[1],
                     targetEl: w.dom.virtualController
                 });
                 break;
             case 91: // knob 3
                 domUpdateDecorator({
-                    actionFn: w.commands.translateX,
+                    actionFn: w.commands.panX,
                     feedbackEl: w.dom.knobControls[2],
                     targetEl: w.dom.virtualController
                 });
                 break;
             case 93: // knob 4
                 domUpdateDecorator({
-                    actionFn: w.commands.translateY,
+                    actionFn: w.commands.panY,
                     feedbackEl: w.dom.knobControls[3],
                     targetEl: w.dom.virtualController
                 });
@@ -216,5 +218,9 @@
         el && (el.textContent = message);
     }
 
+
+    w.midi = {
+        init: init
+    };
 
 })(window, document);

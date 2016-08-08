@@ -3,7 +3,7 @@
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
-    var wrapper = d.querySelector('.wrapper'),
+    var overlay = d.querySelector('.overlay'),
         virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
         bendControl = d.querySelector('#bend-control'),
         modControl = d.querySelector('#mod-control'),
@@ -14,74 +14,6 @@
         keyControls = [].slice.call(d.querySelectorAll('.keys > div')),
         knobControls = [].slice.call(d.querySelectorAll('.knobs input'));
 
-
-    bendControl.addEventListener('input', function (e) {
-        w.commands.continuousRelativeScroll(bendControl.value);
-    });
-
-    modControl.addEventListener('input', function (e) {
-        w.commands.absoluteScroll(modControl.value);
-    });
-
-    volControl.addEventListener('input', function (e) {
-        w.commands.opacity(volControl.value);
-    });
-
-    knobControls[0].addEventListener('input', function (e) {
-        w.commands.rotate(knobControls[0].value, virtualController);
-    });
-
-    knobControls[1].addEventListener('input', function (e) {
-        w.commands.scale(knobControls[1].value, virtualController);
-    });
-
-    knobControls[2].addEventListener('input', function (e) {
-        w.commands.translateX(knobControls[2].value, virtualController);
-    });
-
-    knobControls[3].addEventListener('input', function (e) {
-        w.commands.translateY(knobControls[3].value, virtualController);
-    });
-
-    // mimic the pitchbend physical control behavior:
-    // jump to middle position when leaving mouse button on the bend slider
-    d.addEventListener('mouseup', function (e) {
-        if (e.target === bendControl) {
-            w.commands.continuousRelativeScroll(bendControl.value = 64);
-        }
-    });
-
-    keyControls.forEach(function (node, index) {
-        //node.style.backgroundColor = w.constants.rainbowColors[index % w.constants.rainbowColors.length];
-        node.addEventListener('click', function (e) {
-            w.commands.key({
-                note: w.constants.keyMappings[index],
-                velocity: 70,
-                reverse: true
-            });
-        });
-    });
-
-    addOpacityMouseListeners(padControls);
-    addOpacityMouseListeners(transportControls);
-    //addOpacityMouseListeners(keyControls);
-
-    addMouseListeners(
-        keyControls,
-        function (node, index) {
-            w.commands.key({
-                elIndex: index,
-                velocity: 60
-            });
-        }, function (node, index) {
-            w.commands.opacity({
-                elIndex: index,
-                velocity: 127
-            });
-        });
-
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     function addOpacityMouseListeners(nodes, targetEl) {
         addMouseListeners(
@@ -113,6 +45,7 @@
         var functionList,
             functionListMapName = prop + 'FunctionListMap',
             functionListString = '';
+
         options.el = ensureElement(options.el);
         this[functionListMapName] = this[functionListMapName] || new WeakMap();
         functionList = this[functionListMapName].get(options.el) || {};
@@ -170,7 +103,7 @@
 
 
     w.dom = {
-        wrapper: wrapper,
+        overlay: overlay,
         virtualController: virtualController,
         bendControl: bendControl,
         modControl: modControl,
@@ -180,6 +113,8 @@
         knobControls: knobControls,
         keyControls: keyControls,
         virtualControllerDisplay: virtualControllerDisplay,
+        addMouseListeners: addMouseListeners,
+        addOpacityMouseListeners: addOpacityMouseListeners,
         appendTransform: appendTransform,
         appendFilter: appendFilter,
         setBackgroundColor: setBackgroundColor,
