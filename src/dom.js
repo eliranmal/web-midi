@@ -1,5 +1,18 @@
 (function (w, d) {
 
+    const rainbowColors = [
+        '#f44336',
+        '#ff9800',
+        '#ffeb3b',
+        '#4caf50',
+        '#2196f3',
+        '#3f51b5',
+        '#9c27b0'
+    ];
+
+    var relativeScrollTimerId,
+        tickScrollDistance = 10;
+
     var virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
         bendControl = d.querySelector('#bend-control'),
         modControl = d.querySelector('#mod-control'),
@@ -48,12 +61,16 @@
         }
     });
 
-    addOpacityMouseListener(padControls);
-    addOpacityMouseListener(keyControls);
-    addOpacityMouseListener(transportControls);
+    keyControls.forEach(function (node, index) {
+        node.style.backgroundColor = rainbowColors[index % 7];
+    });
+
+    _addOpacityMouseListener(padControls);
+    _addOpacityMouseListener(keyControls);
+    _addOpacityMouseListener(transportControls);
 
 
-    function addOpacityMouseListener(nodes) {
+    function _addOpacityMouseListener(nodes) {
         nodes.forEach(function (node, index, collection) {
             node.addEventListener('mousedown', function (e) {
                 w.actions.opacity(70, node);
@@ -64,6 +81,78 @@
         });
     }
 
+    function appendTransform(options={}) {
+        _appendFunctionListStyle('transform', options);
+    }
+
+    function appendFilter(options={}) {
+        _appendFunctionListStyle('filter', options);
+    }
+
+    // el, fnName, fnParamValue, fnParamUnit
+    function _appendFunctionListStyle(prop, options) {
+        var functionList,
+            functionListMapName = prop + 'FunctionListMap',
+            functionListString = '';
+        options.el = ensureElement(options.el);
+        this[functionListMapName] = this[functionListMapName] || new WeakMap();
+        functionList = this[functionListMapName].get(options.el) || {};
+        functionList[options.fnName] = options.fnParamValue + (options.fnParamUnit || '');
+        this[functionListMapName].set(options.el, functionList);
+
+        for (var n in functionList) {
+            functionListString += n + '(' + functionList[n] + ') ';
+        }
+        //w.utils.log(transformString);
+        options.el.style[prop] = functionListString;
+    }
+
+    function startContinuousRelativeScroll(options={}) {
+        var startTime,
+            synchronizedInterval,
+            relVelocity = options.velocity - options.mean,
+            absVelocity = Math.abs(relVelocity),
+            interval = Math.round(Math.exp(Math.log1p(options.mean - absVelocity)) * .6),
+            y = tickScrollDistance;
+
+        if (relVelocity > 0) {
+            y = y * -1;
+        }
+
+        w.clearTimeout(relativeScrollTimerId);
+
+        if (relVelocity !== 0) {
+            startTime = new Date().getTime();
+
+            (function timer() {
+                w.scrollBy(0, y);
+                synchronizedInterval = interval - ((new Date().getTime() - startTime) % interval);
+                relativeScrollTimerId = w.setTimeout(timer, synchronizedInterval);
+            })();
+        }
+
+    }
+
+    //const elementColorMap = new WeakMap();
+
+    function setBackgroundColor(options={}) {
+        options.color = options.color || 'red';
+        ensureElement(options.el).style.backgroundColor = options.color;
+    }
+
+    function setBackgroundImage(options={}) {
+        ensureElement(options.el).style.backgroundImage = 'url("' + options.imageUrl + '")';
+    }
+
+    function setOpacity(options={}) {
+        ensureElement(options.el).style.opacity = options.opacity;
+    }
+
+    function ensureElement(el) {
+        return el || d.body;
+    }
+
+
     w.dom = {
         virtualController: virtualController,
         bendControl: bendControl,
@@ -73,7 +162,14 @@
         padControls: padControls,
         knobControls: knobControls,
         keyControls: keyControls,
-        virtualControllerDisplay: virtualControllerDisplay
+        virtualControllerDisplay: virtualControllerDisplay,
+        ensureElement: ensureElement,
+        appendTransform: appendTransform,
+        appendFilter: appendFilter,
+        setBackgroundColor: setBackgroundColor,
+        setBackgroundImage: setBackgroundImage,
+        setOpacity: setOpacity,
+        startContinuousRelativeScroll: startContinuousRelativeScroll
     };
 
 })(window, document);

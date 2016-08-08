@@ -185,6 +185,9 @@
             targetEl: targetEl,
             reverseVelocity: true
         });
+        w.dom.setBackgroundColor({
+            index: keyMap.indexOf(note) % 7
+        });
     }
 
 
