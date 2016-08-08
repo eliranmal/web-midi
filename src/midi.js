@@ -2,17 +2,7 @@
 
     var volume;
     var midi, data, cmd, channel, type, note, velocity;
-
-    var padMap = [
-        50, 45, 51, 49, 36, 38, 42, 46
-    ];
-    var keyMap = (function () {
-        var range = [];
-        for (var i = 0; i < 25; i++) {
-             range[i] = i + 48;
-        }
-        return range;
-    })();
+    
 
     if (navigator.requestMIDIAccess) {
         navigator.requestMIDIAccess({
@@ -56,7 +46,7 @@
             //    break;
             case 224: // pitch bend
                 domUpdateDecorator({
-                    actionFn: w.actions.continuousRelativeScroll,
+                    actionFn: w.commands.continuousRelativeScroll,
                     feedbackEl: w.dom.bendControl
                 });
 
@@ -75,7 +65,7 @@
         switch (note) {
             case 113: // loop
                 domUpdateDecorator({
-                    actionFn: w.actions.switchBackground
+                    actionFn: w.commands.switchBackground
                 });
                 break;
         }
@@ -85,14 +75,14 @@
         switch (note) {
             case 1: // modulation wheel
                 domUpdateDecorator({
-                    actionFn: w.actions.absoluteScroll,
+                    actionFn: w.commands.absoluteScroll,
                     targetEl: w.dom.modControl
                 });
                 break;
             case 7: // volume fader
                 volume = velocity;
                 domUpdateDecorator({
-                    actionFn: w.actions.opacity,
+                    actionFn: w.commands.opacity,
                     feedbackEl: w.dom.volControl
                 });
                 break;
@@ -100,28 +90,28 @@
 
             case 74: // knob 1
                 domUpdateDecorator({
-                    actionFn: w.actions.rotate,
+                    actionFn: w.commands.rotate,
                     feedbackEl: w.dom.knobControls[0],
                     targetEl: w.dom.virtualController
                 });
                 break;
             case 71: // knob 2
                 domUpdateDecorator({
-                    actionFn: w.actions.scale,
+                    actionFn: w.commands.scale,
                     feedbackEl: w.dom.knobControls[1],
                     targetEl: w.dom.virtualController
                 });
                 break;
             case 91: // knob 3
                 domUpdateDecorator({
-                    actionFn: w.actions.translateX,
+                    actionFn: w.commands.translateX,
                     feedbackEl: w.dom.knobControls[2],
                     targetEl: w.dom.virtualController
                 });
                 break;
             case 93: // knob 4
                 domUpdateDecorator({
-                    actionFn: w.actions.translateY,
+                    actionFn: w.commands.translateY,
                     feedbackEl: w.dom.knobControls[3],
                     targetEl: w.dom.virtualController
                 });
@@ -170,24 +160,30 @@
         //    return; // ignore 0 velocity - the pad's 'note-off' does that
         //}
 
-        var targetEl = w.dom.padControls[padMap.indexOf(note)];
+        var targetEl = w.dom.padControls[w.constants.padMappings.indexOf(note)];
         domUpdateDecorator({
-            actionFn: w.actions.opacity,
+            actionFn: w.commands.opacity,
             targetEl: targetEl,
             reverseVelocity: true
         });
     }
 
     function keyController() {
-        var targetEl = w.dom.keyControls[keyMap.indexOf(note)];
-        domUpdateDecorator({
-            actionFn: w.actions.opacity,
-            targetEl: targetEl,
-            reverseVelocity: true
+        w.commands.key({
+            note: note,
+            velocity: velocity
+            //domEcho: true
         });
-        w.dom.setBackgroundColor({
-            index: keyMap.indexOf(note) % 7
-        });
+        //var targetEl = w.dom.keyControls[w.constants.keyMappings.indexOf(note)];
+        //domUpdateDecorator({
+        //    actionFn: w.commands.opacity,
+        //    targetEl: targetEl,
+        //    reverseVelocity: true
+        //});
+        //w.dom.setBackgroundColor({
+        //    el: w.dom.virtualControllerDisplay,
+        //    index: w.constants.keyMappings.indexOf(note) % 7
+        //});
     }
 
 

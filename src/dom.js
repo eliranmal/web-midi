@@ -1,19 +1,10 @@
 (function (w, d) {
 
-    const rainbowColors = [
-        '#f44336',
-        '#ff9800',
-        '#ffeb3b',
-        '#4caf50',
-        '#2196f3',
-        '#3f51b5',
-        '#9c27b0'
-    ];
-
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
-    var virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
+    var wrapper = d.querySelector('.wrapper'),
+        virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
         bendControl = d.querySelector('#bend-control'),
         modControl = d.querySelector('#mod-control'),
         volControl = d.querySelector('#vol-control'),
@@ -22,75 +13,103 @@
         padControls = [].slice.call(d.querySelectorAll('.pads > div > div')),
         keyControls = [].slice.call(d.querySelectorAll('.keys > div')),
         knobControls = [].slice.call(d.querySelectorAll('.knobs input'));
-    // todo - tie transport buttons, too (and knobs!, and keys!!!)
 
 
     bendControl.addEventListener('input', function (e) {
-        w.actions.continuousRelativeScroll(bendControl.value);
+        w.commands.continuousRelativeScroll(bendControl.value);
     });
 
     modControl.addEventListener('input', function (e) {
-        w.actions.absoluteScroll(modControl.value);
+        w.commands.absoluteScroll(modControl.value);
     });
 
     volControl.addEventListener('input', function (e) {
-        w.actions.opacity(volControl.value);
+        w.commands.opacity(volControl.value);
     });
 
     knobControls[0].addEventListener('input', function (e) {
-        w.actions.rotate(knobControls[0].value, virtualController);
+        w.commands.rotate(knobControls[0].value, virtualController);
     });
 
     knobControls[1].addEventListener('input', function (e) {
-        w.actions.scale(knobControls[1].value, virtualController);
+        w.commands.scale(knobControls[1].value, virtualController);
     });
 
     knobControls[2].addEventListener('input', function (e) {
-        w.actions.translateX(knobControls[2].value, virtualController);
+        w.commands.translateX(knobControls[2].value, virtualController);
     });
 
     knobControls[3].addEventListener('input', function (e) {
-        w.actions.translateY(knobControls[3].value, virtualController);
+        w.commands.translateY(knobControls[3].value, virtualController);
     });
 
     // mimic the pitchbend physical control behavior:
     // jump to middle position when leaving mouse button on the bend slider
     d.addEventListener('mouseup', function (e) {
         if (e.target === bendControl) {
-            w.actions.continuousRelativeScroll(bendControl.value = 64);
+            w.commands.continuousRelativeScroll(bendControl.value = 64);
         }
     });
 
     keyControls.forEach(function (node, index) {
-        node.style.backgroundColor = rainbowColors[index % 7];
+        //node.style.backgroundColor = w.constants.rainbowColors[index % w.constants.rainbowColors.length];
+        node.addEventListener('click', function (e) {
+            w.commands.key({
+                note: w.constants.keyMappings[index],
+                velocity: 70,
+                reverse: true
+            });
+        });
     });
 
-    _addOpacityMouseListener(padControls);
-    _addOpacityMouseListener(keyControls);
-    _addOpacityMouseListener(transportControls);
+    addOpacityMouseListeners(padControls);
+    addOpacityMouseListeners(transportControls);
+    //addOpacityMouseListeners(keyControls);
+
+    addMouseListeners(
+        keyControls,
+        function (node, index) {
+            w.commands.key({
+                elIndex: index,
+                velocity: 60
+            });
+        }, function (node, index) {
+            w.commands.opacity({
+                elIndex: index,
+                velocity: 127
+            });
+        });
 
 
-    function _addOpacityMouseListener(nodes) {
+    // -----------------------------------------------------------------------------------------------------------------
+
+    function addOpacityMouseListeners(nodes, targetEl) {
+        addMouseListeners(
+            nodes,
+            function (node, index) {
+                w.commands.opacity(70, targetEl || node);
+            }, function (node, index) {
+                w.commands.opacity(127, targetEl || node);
+            });
+    }
+
+    function addMouseListeners(nodes, onMouseDown, onMouseUp) {
         nodes.forEach(function (node, index, collection) {
-            node.addEventListener('mousedown', function (e) {
-                w.actions.opacity(70, node);
-            });
-            node.addEventListener('mouseup', function (e) {
-                w.actions.opacity(127, node);
-            });
+            node.addEventListener('mousedown', onMouseDown.bind(this, node, index));
+            node.addEventListener('mouseup', onMouseUp.bind(this, node, index));
         });
     }
 
     function appendTransform(options={}) {
-        _appendFunctionListStyle('transform', options);
+        appendFunctionListStyle('transform', options);
     }
 
     function appendFilter(options={}) {
-        _appendFunctionListStyle('filter', options);
+        appendFunctionListStyle('filter', options);
     }
 
     // el, fnName, fnParamValue, fnParamUnit
-    function _appendFunctionListStyle(prop, options) {
+    function appendFunctionListStyle(prop, options) {
         var functionList,
             functionListMapName = prop + 'FunctionListMap',
             functionListString = '';
@@ -133,10 +152,7 @@
 
     }
 
-    //const elementColorMap = new WeakMap();
-
     function setBackgroundColor(options={}) {
-        options.color = options.color || 'red';
         ensureElement(options.el).style.backgroundColor = options.color;
     }
 
@@ -154,6 +170,7 @@
 
 
     w.dom = {
+        wrapper: wrapper,
         virtualController: virtualController,
         bendControl: bendControl,
         modControl: modControl,
@@ -163,7 +180,6 @@
         knobControls: knobControls,
         keyControls: keyControls,
         virtualControllerDisplay: virtualControllerDisplay,
-        ensureElement: ensureElement,
         appendTransform: appendTransform,
         appendFilter: appendFilter,
         setBackgroundColor: setBackgroundColor,
