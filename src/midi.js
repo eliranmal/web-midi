@@ -48,7 +48,7 @@
             //    break;
             case 224: // pitch bend
                 domUpdateDecorator({
-                    actionFn: w.commands.pitchBend,
+                    actionFn: w.commands.stickyScroll,
                     feedbackEl: w.dom.bendControl
                 });
 
@@ -67,7 +67,7 @@
         switch (note) {
             case 113: // loop
                 domUpdateDecorator({
-                    actionFn: w.commands.switchBackground
+                    actionFn: w.commands.image
                 });
                 break;
         }
@@ -77,7 +77,7 @@
         switch (note) {
             case 1: // modulation wheel
                 domUpdateDecorator({
-                    actionFn: w.commands.modulation,
+                    actionFn: w.commands.scroll,
                     targetEl: w.dom.modControl
                 });
                 break;
@@ -171,21 +171,20 @@
     }
 
     function keyController() {
-        w.commands.key({
-            note: note,
-            velocity: velocity
+        var el = w.dom.keyControls[w.constants.keyMappings.indexOf(note)],
+            color = w.dom.keyElColorMap.get(el);
+        w.commands.color({
+            el: el,
+            velocity: velocity,
+            color: color,
+            reverse: true
             //domEcho: true
         });
-        //var targetEl = w.dom.keyControls[w.constants.keyMappings.indexOf(note)];
-        //domUpdateDecorator({
-        //    actionFn: w.commands.opacity,
-        //    targetEl: targetEl,
-        //    reverseVelocity: true
-        //});
-        //w.dom.setBackgroundColor({
-        //    el: w.dom.virtualControllerDisplay,
-        //    index: w.constants.keyMappings.indexOf(note) % 7
-        //});
+        w.commands.opacity({
+            el: el,
+            velocity: velocity,
+            reverse: true
+        });
     }
 
 

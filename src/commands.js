@@ -1,6 +1,6 @@
 (function (w, d) {
 
-    function _modulation(velocity) {
+    function _scroll(velocity) {
         var docHeight = d.body.offsetHeight,
             y = w.utils.fromMidiRange({
                 scale: docHeight,
@@ -12,7 +12,7 @@
         w.scrollTo(0, y);
     }
 
-    function _pitchBend(velocity) {
+    function _stickyScroll(velocity) {
         w.dom.startContinuousRelativeScroll({
             velocity: velocity,
             mean: 64 // todo - redundant?
@@ -28,9 +28,9 @@
         //w.utils.log('degrees', degrees);
         w.dom.appendTransform({
             el: el,
-            fnName: 'rotate',
-            fnParamValue: degrees,
-            fnParamUnit: 'deg'
+            name: 'rotate',
+            value: degrees,
+            unit: 'deg'
         });
     }
 
@@ -44,21 +44,8 @@
         //w.utils.log('scale', scale);
         w.dom.appendTransform({
             el: el,
-            fnName: 'scale',
-            fnParamValue: scaleValue
-        });
-    }
-
-    function _setOpacity(vel, el) {
-        var opacityValue = w.utils.fromMidiRange({
-            scale: 1,
-            velocity: vel,
-            trim: 3
-        });
-        //w.utils.log('opacity', opacity);
-        w.dom.setOpacity({
-            el: el,
-            opacity: opacityValue
+            name: 'scale',
+            value: scaleValue
         });
     }
 
@@ -71,13 +58,13 @@
         //w.utils.log('saturation', saturation);
         w.dom.appendFilter({
             el: el,
-            fnName: 'saturate',
-            fnParamValue: saturation,
-            fnParamUnit: '%'
+            name: 'saturate',
+            value: saturation,
+            unit: '%'
         });
     }
 
-    function _switchBackground(velocity) {
+    function _image(velocity) {
         var imageUrl;
         if (velocity === 0) {
             imageUrl = 'http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/sativa.png';
@@ -86,22 +73,6 @@
         }
         w.dom.setBackgroundImage({
             imageUrl: imageUrl
-        });
-    }
-
-    function _setBackgroundColor(velocity, el, elIndex) {
-        var colorIndex = (elIndex % w.constants.rainbowColors.length),
-            color;
-
-        if (velocity === 0) {
-            color = 'transparent';
-        } else {
-            color = w.constants.rainbowColors[colorIndex];
-        }
-
-        w.dom.setBackgroundColor({
-            el: el,
-            color: color
         });
     }
 
@@ -116,9 +87,9 @@
         //w.utils.log('translate', translate);
         w.dom.appendTransform({
             el: el,
-            fnName: 'translate' + axis,
-            fnParamValue: translation,
-            fnParamUnit: 'px'
+            name: 'translate' + axis,
+            value: translation,
+            unit: 'px'
         });
     }
 
@@ -130,24 +101,33 @@
         _translate(vel, el, 'Y');
     }
 
-
-    function key(options={}) {
-
-        var reversed = w.utils.reverseMidiRange(options.velocity),
-            elIndex = options.elIndex,
-            targetEl;
-
-        if (w.utils.isUndefined(elIndex)) {
-            elIndex = w.constants.keyMappings.indexOf(options.note);
+    function _color(options={}) {
+        if (options.velocity === 0) {
+            options.color = 'transparent';
         }
+        w.dom.setBackgroundColor({
+            el: w.dom.overlay, // todo - extract to options.targetEl (add sourceEl)
+            color: options.color
+        });
+    }
 
-        targetEl = w.dom.keyControls[elIndex];
-
-        //if (options.domEcho) {
-        //}
-        _setOpacity(reversed, targetEl);
-
-        _setBackgroundColor(options.velocity, w.dom.overlay, elIndex);
+    function _opacity(options={}) {
+        var opacityValue;
+        if (options.reverse) {
+            options.velocity = w.utils.reverseMidiRange(options.velocity);
+        }
+        opacityValue = w.utils.fromMidiRange({ // change to fromRange - pass fromRange [min, max] and toRange (min/max)
+            // min / max
+            scale: 1,
+            // value
+            velocity: options.velocity,
+            trim: 3
+        });
+        //w.utils.log('opacity', opacity);
+        w.dom.setOpacity({
+            el: options.el,
+            opacity: opacityValue
+        });
     }
 
 
@@ -156,13 +136,12 @@
         zoom: _zoom,
         panX: _panX,
         panY: _panY,
-        opacity: _setOpacity,
+        color: _color,
+        opacity: _opacity,
         saturate: _saturate,
-        switchBackground: _switchBackground,
-
-        modulation: _modulation,
-        pitchBend: _pitchBend,
-        key: key
+        image: _image,
+        scroll: _scroll,
+        stickyScroll: _stickyScroll
     };
 
 })(window, document);

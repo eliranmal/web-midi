@@ -1,5 +1,9 @@
 (function (w, d) {
 
+    const knobCommnads = [
+        'rotate', 'zoom', 'panX', 'panY'
+    ];
+
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
@@ -14,18 +18,92 @@
         keyControls = [].slice.call(d.querySelectorAll('.keys > div')),
         knobControls = [].slice.call(d.querySelectorAll('.knobs input'));
 
+    const keyElColorMap = (function () {
+        var index, color, colorIndex;
+        var map = new WeakMap();
+        for (index in keyControls) {
+            colorIndex = (index % w.constants.rainbowColors.length);
+            color = w.constants.rainbowColors[colorIndex];
+            map.set(keyControls[index], color);
+        }
+        return map;
+    })();
 
-    function addOpacityMouseListeners(nodes, targetEl) {
-        addMouseListeners(
-            nodes,
+
+    function init() {
+
+        w.dom.addInputListener(w.dom.volControl, w.commands.opacity, w.dom.virtualController);
+        w.dom.addInputListener(w.dom.modControl, w.commands.scroll);
+        w.dom.addInputListener(w.dom.bendControl, w.commands.stickyScroll);
+        // mimic the pitchbend physical control behavior:
+        // jump to middle position when leaving mouse button on the bend slider
+        w.dom.bendControl.addEventListener('mouseup', function (e) {
+            w.commands.stickyScroll(w.dom.bendControl.value = 64);
+        });
+
+        w.dom.knobControls.forEach(function (node, index, collection) {
+            var command = knobCommnads[index];
+            if (command) {
+                w.dom.addInputListener(node, w.commands[command], w.dom.virtualController);
+            }
+        });
+
+        //w.dom.keyControls.forEach(function (node, index) {
+        //    node.style.backgroundColor = w.constants.rainbowColors[index % w.constants.rainbowColors.length];
+        //});
+
+        addAllOpacityMouseListeners();
+
+        w.dom.addMouseListeners(
+            w.dom.keyControls,
             function (node, index) {
-                w.commands.opacity(70, targetEl || node);
+                w.commands.color({
+                    el: node,
+                    velocity: 60,
+                    color: w.dom.keyElColorMap.get(node)
+                });
             }, function (node, index) {
-                w.commands.opacity(127, targetEl || node);
+                w.commands.color({
+                    el: node,
+                    velocity: 0,
+                    color: w.dom.keyElColorMap.get(node)
+                });
             });
     }
 
-    function addMouseListeners(nodes, onMouseDown, onMouseUp) {
+    function _addInputListener(inputEl, command, targetEl) {
+        inputEl.addEventListener('input', function (e) {
+            w.commands[command](inputEl.value, targetEl);
+        });
+    }
+
+    function addAllOpacityMouseListeners() {
+        w.dom.addOpacityMouseListeners(w.dom.padControls);
+        w.dom.addOpacityMouseListeners(w.dom.keyControls);
+        w.dom.addOpacityMouseListeners(w.dom.transportControls);
+    }
+
+    function _addOpacityMouseListeners(nodes) {
+        _addMouseListeners(
+            nodes,
+            opacityMouseListener.bind({
+                velocity: 60
+            }),
+            opacityMouseListener.bind({
+                velocity: 0
+            })
+        );
+    }
+
+    function opacityMouseListener(el, index) {
+        w.commands.opacity({
+            velocity: this.velocity,
+            el: el,
+            reverse: true
+        });
+    }
+
+    function _addMouseListeners(nodes, onMouseDown, onMouseUp) {
         nodes.forEach(function (node, index, collection) {
             node.addEventListener('mousedown', onMouseDown.bind(this, node, index));
             node.addEventListener('mouseup', onMouseUp.bind(this, node, index));
@@ -40,7 +118,7 @@
         appendFunctionListStyle('filter', options);
     }
 
-    // el, fnName, fnParamValue, fnParamUnit
+    // el, name, value, unit
     function appendFunctionListStyle(prop, options) {
         var functionList,
             functionListMapName = prop + 'FunctionListMap',
@@ -49,7 +127,7 @@
         options.el = ensureElement(options.el);
         this[functionListMapName] = this[functionListMapName] || new WeakMap();
         functionList = this[functionListMapName].get(options.el) || {};
-        functionList[options.fnName] = options.fnParamValue + (options.fnParamUnit || '');
+        functionList[options.name] = options.value + (options.unit || '');
         this[functionListMapName].set(options.el, functionList);
 
         for (var n in functionList) {
@@ -113,8 +191,8 @@
         knobControls: knobControls,
         keyControls: keyControls,
         virtualControllerDisplay: virtualControllerDisplay,
-        addMouseListeners: addMouseListeners,
-        addOpacityMouseListeners: addOpacityMouseListeners,
+        keyElColorMap: keyElColorMap,
+        init: init,
         appendTransform: appendTransform,
         appendFilter: appendFilter,
         setBackgroundColor: setBackgroundColor,
