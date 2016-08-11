@@ -1,6 +1,6 @@
 (function (w) {
 
-    const keyMappings = (function () {
+    const keyNoteMap = (function () {
         var range = [];
         for (var i = 0; i < 25; i++) {
             range[i] = i + 48;
@@ -8,9 +8,21 @@
         return range;
     })();
 
-    const padMappings = [
-        50, 45, 51, 49, 36, 38, 42, 46
+    const padNoteMap = [
+        50, 45, 51, 49,
+        36, 38, 42, 46
     ];
+
+    // todo - find all transport notes
+    const transportNoteMap = [
+        113,    // loop
+        null,   // rewind
+        null,   // forward
+        null,   // stop
+        null,   // play
+        null    // record
+    ];
+
 
     const rainbowColors = [
         '#f44336',
@@ -24,8 +36,8 @@
 
 
     w.constants = {
-        keyMappings: keyMappings,
-        padMappings: padMappings,
+        keyNoteMap: keyNoteMap,
+        padNoteMap: padNoteMap,
         rainbowColors: rainbowColors
     };
 

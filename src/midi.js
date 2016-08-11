@@ -49,7 +49,7 @@
             case 224: // pitch bend
                 domUpdateDecorator({
                     actionFn: w.commands.stickyScroll,
-                    feedbackEl: w.dom.bendControl
+                    feedbackEl: w.dom.el.bendControl
                 });
 
                 break;
@@ -64,6 +64,7 @@
     }
 
     function transportController() {
+        // todo - use transportNoteMap constant, with util function to map these contants to actions (and use that util everywhere)
         switch (note) {
             case 113: // loop
                 domUpdateDecorator({
@@ -78,14 +79,14 @@
             case 1: // modulation wheel
                 domUpdateDecorator({
                     actionFn: w.commands.scroll,
-                    targetEl: w.dom.modControl
+                    targetEl: w.dom.el.modControl
                 });
                 break;
             case 7: // volume fader
                 volume = velocity;
                 domUpdateDecorator({
                     actionFn: w.commands.opacity,
-                    feedbackEl: w.dom.volControl
+                    feedbackEl: w.dom.el.volControl
                 });
                 break;
 
@@ -93,56 +94,56 @@
             case 74: // knob 1
                 domUpdateDecorator({
                     actionFn: w.commands.rotate,
-                    feedbackEl: w.dom.knobControls[0],
-                    targetEl: w.dom.virtualController
+                    feedbackEl: w.dom.el.knobControls[0],
+                    targetEl: w.dom.el.virtualController
                 });
                 break;
             case 71: // knob 2
                 domUpdateDecorator({
                     actionFn: w.commands.zoom,
-                    feedbackEl: w.dom.knobControls[1],
-                    targetEl: w.dom.virtualController
+                    feedbackEl: w.dom.el.knobControls[1],
+                    targetEl: w.dom.el.virtualController
                 });
                 break;
             case 91: // knob 3
                 domUpdateDecorator({
                     actionFn: w.commands.panX,
-                    feedbackEl: w.dom.knobControls[2],
-                    targetEl: w.dom.virtualController
+                    feedbackEl: w.dom.el.knobControls[2],
+                    targetEl: w.dom.el.virtualController
                 });
                 break;
             case 93: // knob 4
                 domUpdateDecorator({
                     actionFn: w.commands.panY,
-                    feedbackEl: w.dom.knobControls[3],
-                    targetEl: w.dom.virtualController
+                    feedbackEl: w.dom.el.knobControls[3],
+                    targetEl: w.dom.el.virtualController
                 });
                 break;
             case 73: // knob 5
                 domUpdateDecorator({
                     actionFn: null,
-                    feedbackEl: w.dom.knobControls[4],
+                    feedbackEl: w.dom.el.knobControls[4],
                     targetEl: null
                 });
                 break;
             case 72: // knob 6
                 domUpdateDecorator({
                     actionFn: null,
-                    feedbackEl: w.dom.knobControls[5],
+                    feedbackEl: w.dom.el.knobControls[5],
                     targetEl: null
                 });
                 break;
             case 5:  // knob 7
                 domUpdateDecorator({
                     actionFn: null,
-                    feedbackEl: w.dom.knobControls[6],
+                    feedbackEl: w.dom.el.knobControls[6],
                     targetEl: null
                 });
                 break;
             case 84: // knob 8
                 domUpdateDecorator({
                     actionFn: null,
-                    feedbackEl: w.dom.knobControls[7],
+                    feedbackEl: w.dom.el.knobControls[7],
                     targetEl: null
                 });
                 break;
@@ -162,7 +163,8 @@
         //    return; // ignore 0 velocity - the pad's 'note-off' does that
         //}
 
-        var targetEl = w.dom.padControls[w.constants.padMappings.indexOf(note)];
+        // todo - extract to util
+        var targetEl = w.dom.el.padControls[w.constants.padNoteMap.indexOf(note)];
         domUpdateDecorator({
             actionFn: w.commands.opacity,
             targetEl: targetEl,
@@ -171,7 +173,8 @@
     }
 
     function keyController() {
-        var el = w.dom.keyControls[w.constants.keyMappings.indexOf(note)],
+        // todo - extract to util
+        var el = w.dom.el.keyControls[w.constants.keyNoteMap.indexOf(note)],
             color = w.dom.keyElColorMap.get(el);
         w.commands.color({
             el: el,
@@ -213,7 +216,7 @@
     }
 
     function print(message) {
-        var el = w.dom.virtualControllerDisplay;
+        var el = w.dom.el.virtualControllerDisplay;
         el && (el.textContent = message);
     }
 

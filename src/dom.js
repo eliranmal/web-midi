@@ -20,11 +20,14 @@
 
     const keyElColorMap = (function () {
         var index, color, colorIndex;
-        var map = new WeakMap();
-        for (index in keyControls) {
+        var map = new WeakMap(),
+            whiteKeys = keyControls.filter(function (node, index) {
+                return node.className.indexOf('white') !== -1;
+            });
+        for (index in whiteKeys) {
             colorIndex = (index % w.constants.rainbowColors.length);
             color = w.constants.rainbowColors[colorIndex];
-            map.set(keyControls[index], color);
+            map.set(whiteKeys[index], color);
         }
         return map;
     })();
@@ -32,41 +35,41 @@
 
     function init() {
 
-        w.dom.addInputListener(w.dom.volControl, w.commands.opacity, w.dom.virtualController);
-        w.dom.addInputListener(w.dom.modControl, w.commands.scroll);
-        w.dom.addInputListener(w.dom.bendControl, w.commands.stickyScroll);
+        _addInputListener(volControl, w.commands.opacity, virtualController);
+        _addInputListener(modControl, w.commands.scroll);
+        _addInputListener(bendControl, w.commands.stickyScroll);
         // mimic the pitchbend physical control behavior:
         // jump to middle position when leaving mouse button on the bend slider
-        w.dom.bendControl.addEventListener('mouseup', function (e) {
-            w.commands.stickyScroll(w.dom.bendControl.value = 64);
+        bendControl.addEventListener('mouseup', function (e) {
+            w.commands.stickyScroll(bendControl.value = 64);
         });
 
-        w.dom.knobControls.forEach(function (node, index, collection) {
+        knobControls.forEach(function (node, index, collection) {
             var command = knobCommnads[index];
             if (command) {
-                w.dom.addInputListener(node, w.commands[command], w.dom.virtualController);
+                _addInputListener(node, w.commands[command], virtualController);
             }
         });
 
-        //w.dom.keyControls.forEach(function (node, index) {
+        //keyControls.forEach(function (node, index) {
         //    node.style.backgroundColor = w.constants.rainbowColors[index % w.constants.rainbowColors.length];
         //});
 
-        addAllOpacityMouseListeners();
+        _addAllOpacityMouseListeners();
 
-        w.dom.addMouseListeners(
-            w.dom.keyControls,
+        _addMouseListeners(
+            keyControls,
             function (node, index) {
                 w.commands.color({
                     el: node,
                     velocity: 60,
-                    color: w.dom.keyElColorMap.get(node)
+                    color: keyElColorMap.get(node)
                 });
             }, function (node, index) {
                 w.commands.color({
                     el: node,
                     velocity: 0,
-                    color: w.dom.keyElColorMap.get(node)
+                    color: keyElColorMap.get(node)
                 });
             });
     }
@@ -77,10 +80,10 @@
         });
     }
 
-    function addAllOpacityMouseListeners() {
-        w.dom.addOpacityMouseListeners(w.dom.padControls);
-        w.dom.addOpacityMouseListeners(w.dom.keyControls);
-        w.dom.addOpacityMouseListeners(w.dom.transportControls);
+    function _addAllOpacityMouseListeners() {
+        _addOpacityMouseListeners(padControls);
+        _addOpacityMouseListeners(keyControls);
+        _addOpacityMouseListeners(transportControls);
     }
 
     function _addOpacityMouseListeners(nodes) {
@@ -181,16 +184,18 @@
 
 
     w.dom = {
-        overlay: overlay,
-        virtualController: virtualController,
-        bendControl: bendControl,
-        modControl: modControl,
-        volControl: volControl,
-        transportControls: transportControls,
-        padControls: padControls,
-        knobControls: knobControls,
-        keyControls: keyControls,
-        virtualControllerDisplay: virtualControllerDisplay,
+        el: {
+            overlay: overlay,
+            virtualController: virtualController,
+            virtualControllerDisplay: virtualControllerDisplay,
+            bendControl: bendControl,
+            modControl: modControl,
+            volControl: volControl,
+            keyControls: keyControls,
+            padControls: padControls,
+            knobControls: knobControls,
+            transportControls: transportControls
+        },
         keyElColorMap: keyElColorMap,
         init: init,
         appendTransform: appendTransform,

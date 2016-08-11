@@ -106,7 +106,7 @@
             options.color = 'transparent';
         }
         w.dom.setBackgroundColor({
-            el: w.dom.overlay, // todo - extract to options.targetEl (add sourceEl)
+            el: w.dom.el.overlay, // todo - extract to options.targetEl (add sourceEl)
             color: options.color
         });
     }
