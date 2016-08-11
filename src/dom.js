@@ -1,9 +1,5 @@
 (function (w, d) {
 
-    const knobCommnads = [
-        'rotate', 'zoom', 'panX', 'panY'
-    ];
-
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
@@ -38,6 +34,7 @@
         _addInputListener(volControl, w.commands.opacity, virtualController);
         _addInputListener(modControl, w.commands.scroll);
         _addInputListener(bendControl, w.commands.stickyScroll);
+
         // mimic the pitchbend physical control behavior:
         // jump to middle position when leaving mouse button on the bend slider
         bendControl.addEventListener('mouseup', function (e) {
@@ -45,7 +42,7 @@
         });
 
         knobControls.forEach(function (node, index, collection) {
-            var command = knobCommnads[index];
+            var command = w.constants.knobCommandMap[index];
             if (command) {
                 _addInputListener(node, w.commands[command], virtualController);
             }
@@ -76,7 +73,7 @@
 
     function _addInputListener(inputEl, command, targetEl) {
         inputEl.addEventListener('input', function (e) {
-            w.commands[command](inputEl.value, targetEl);
+            command(inputEl.value, targetEl);
         });
     }
 
@@ -113,11 +110,11 @@
         });
     }
 
-    function appendTransform(options={}) {
+    function appendTransform(options) {
         appendFunctionListStyle('transform', options);
     }
 
-    function appendFilter(options={}) {
+    function appendFilter(options) {
         appendFunctionListStyle('filter', options);
     }
 
@@ -140,12 +137,12 @@
         options.el.style[prop] = functionListString;
     }
 
-    function startContinuousRelativeScroll(options={}) {
+    function startContinuousRelativeScroll(options) {
         var startTime,
             synchronizedInterval,
             relVelocity = options.velocity - options.mean,
             absVelocity = Math.abs(relVelocity),
-            interval = Math.round(Math.exp(Math.log1p(options.mean - absVelocity)) * .6),
+            interval = Math.round(Math.exp(Math.log1p(options.mean - absVelocity)) * 0.6),
             y = tickScrollDistance;
 
         if (relVelocity > 0) {
@@ -163,18 +160,17 @@
                 relativeScrollTimerId = w.setTimeout(timer, synchronizedInterval);
             })();
         }
-
     }
 
-    function setBackgroundColor(options={}) {
+    function setBackgroundColor(options) {
         ensureElement(options.el).style.backgroundColor = options.color;
     }
 
-    function setBackgroundImage(options={}) {
+    function setBackgroundImage(options) {
         ensureElement(options.el).style.backgroundImage = 'url("' + options.imageUrl + '")';
     }
 
-    function setOpacity(options={}) {
+    function setOpacity(options) {
         ensureElement(options.el).style.opacity = options.opacity;
     }
 

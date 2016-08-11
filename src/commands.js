@@ -101,7 +101,7 @@
         _translate(vel, el, 'Y');
     }
 
-    function _color(options={}) {
+    function _color(options) {
         if (options.velocity === 0) {
             options.color = 'transparent';
         }
@@ -111,7 +111,7 @@
         });
     }
 
-    function _opacity(options={}) {
+    function _opacity(options) {
         var opacityValue;
         if (options.reverse) {
             options.velocity = w.utils.reverseMidiRange(options.velocity);

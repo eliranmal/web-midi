@@ -13,6 +13,8 @@
         36, 38, 42, 46
     ];
 
+    const knobNoteMap = [];
+
     // todo - find all transport notes
     const transportNoteMap = [
         113,    // loop
@@ -21,6 +23,10 @@
         null,   // stop
         null,   // play
         null    // record
+    ];
+
+    const knobCommandMap = [
+        'rotate', 'zoom', 'panX', 'panY'
     ];
 
 
@@ -38,6 +44,8 @@
     w.constants = {
         keyNoteMap: keyNoteMap,
         padNoteMap: padNoteMap,
+        transportNoteMap: transportNoteMap,
+        knobCommandMap: knobCommandMap,
         rainbowColors: rainbowColors
     };
 

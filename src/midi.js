@@ -11,7 +11,7 @@
     }
 
     function _onMidiFailure(e) {
-        w.utils.log('No access to MIDI devices or your browser does not support WebMIDI API. Please use WebMIDIAPIShim ' + e);
+        w.utils.log('no access to MIDI devices or your browser does not support WebMIDI API. please use WebMIDIAPIShim ' + e);
     }
 
     function _onMidiSuccess(midiAccess) {
@@ -74,6 +74,7 @@
                         _handleTransportTrigger(midiMessageData);
                         break;
                     default:
+                        // todo - find out the channels of modulation/volume and knobs
                         _handleRangeTrigger(midiMessageData);
                         break;
                 }
@@ -95,13 +96,13 @@
 
     function _handleRangeTrigger(midiMessageData) {
         switch (midiMessageData.note) {
-            case 1: // modulation wheel
+            case 1: // modulation
                 _domUpdateDecorator({
                     actionFn: w.commands.scroll,
                     targetEl: w.dom.el.modControl
                 }, midiMessageData);
                 break;
-            case 7: // volume fader
+            case 7: // volume
                 _domUpdateDecorator({
                     actionFn: w.commands.opacity,
                     feedbackEl: w.dom.el.volControl
@@ -198,10 +199,6 @@
     }
 
     function _handlePadTrigger(midiMessageData) {
-        //if (midiMessageData.velocity == 0) {
-        //    return; // ignore 0 velocity - the pad's 'note-off' does that
-        //}
-
         // todo - extract to util
         var targetEl = w.dom.el.padControls[w.constants.padNoteMap.indexOf(midiMessageData.note)];
         _domUpdateDecorator({
@@ -212,7 +209,7 @@
     }
 
 
-    function _domUpdateDecorator(options={}, midiMessageData) {
+    function _domUpdateDecorator(options, midiMessageData) {
         var vel = midiMessageData.velocity;
         if (options.reverseVelocity) {
             vel = 127 - vel;
