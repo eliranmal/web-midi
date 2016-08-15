@@ -33,7 +33,11 @@ pre {
 
 .overlay {
     z-index: 0;
-    opacity: .3;
+
+    /* todo - make the transition on overlays work (add multiple overlays per key when dom is ready, only toggle opacity on midi key trigger) */
+    /*opacity: 0;*/
+    /*-webkit-transition: background-color 500ms, opacity 500ms;*/
+    /*transition: background-color 500ms, opacity 500ms;*/
 }
 
 .fake-height {
@@ -41,7 +45,6 @@ pre {
     height: 10000px;
     /*background: rainbow;*/
 }
-
 
 /* virtual midi controller */
 
@@ -66,7 +69,6 @@ pre {
     height: 50%;
 }
 
-
 .virtual-controller > div .keys {
     margin-left: 5px;
 }
@@ -80,6 +82,7 @@ pre {
 .virtual-controller > div .keys .black {
     position: relative;
 }
+
 .virtual-controller > div .keys .white {
     z-index: 10;
     width: 50px;
@@ -100,7 +103,6 @@ pre {
     margin-left: -48px;
 }
 
-
 .virtual-controller label,
 .virtual-controller input {
     width: 60px;
@@ -119,8 +121,8 @@ pre {
     -webkit-appearance: slider-vertical;
 }
 
-
 .virtual-controller .display {
+    position: relative;
     display: inline-block;
     width: 300px;
     height: calc(100% - 50px);
@@ -128,10 +130,73 @@ pre {
     border: 3px solid;
     padding: 1em;
     vertical-align: middle;
-    font: 15px/3 monospace;
+    font: 15px monospace;
     color: #fff;
     background-color: #ccc;
-    white-space: pre-wrap;
+    white-space: pre;
+}
+
+.virtual-controller .display > div {
+    position: absolute;
+}
+
+.virtual-controller .display > div.type {
+    top: 0;
+    bottom: 50%;
+    left: 0;
+    right: 66.666%;
+}
+
+.virtual-controller .display > div.note {
+    top: 0;
+    bottom: 50%;
+    left: 33.333%;
+    right: 33.333%;
+}
+
+.virtual-controller .display > div.channel {
+    top: 50%;
+    bottom: 0;
+    left: 0;
+    right: 66.666%;
+}
+
+.virtual-controller .display > div.cmd {
+    top: 50%;
+    bottom: 0;
+    left: 33.333%;
+    right: 33.333%;
+}
+
+.virtual-controller .display > div.velocity {
+    top: 0;
+    bottom: 0;
+    left: 66.666%;
+    right: 0;
+}
+
+.virtual-controller .display > div > div {
+    position: absolute;
+    width: 100%;
+}
+
+.virtual-controller .display > div .label {
+    top: 5px;
+    font-size: .8em;
+}
+
+.virtual-controller .display > div .log {
+    top: 20px;
+    font-size: 1.7em;
+}
+
+.virtual-controller .display > div.velocity .label {
+    top: 25px;
+}
+
+.virtual-controller .display > div.velocity .log {
+    top: 40px;
+    font-size: 3em;
 }
 
 
@@ -166,7 +231,6 @@ pre {
     background-color: #ccc;
     cursor: pointer;
 }
-
 
 /* helpers */
 

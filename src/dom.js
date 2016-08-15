@@ -3,8 +3,12 @@
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
-    var overlay = d.querySelector('.overlay'),
-        virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
+    var virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
+        displayLogChannel = virtualControllerDisplay.querySelector('.channel .log'),
+        displayLogCmd = virtualControllerDisplay.querySelector('.cmd .log'),
+        displayLogType = virtualControllerDisplay.querySelector('.type .log'),
+        displayLogNote = virtualControllerDisplay.querySelector('.note .log'),
+        displayLogVelocity = virtualControllerDisplay.querySelector('.velocity .log'),
         bendControl = d.querySelector('#bend-control'),
         modControl = d.querySelector('#mod-control'),
         volControl = d.querySelector('#vol-control'),
@@ -28,113 +32,70 @@
         return map;
     })();
 
+    const overlayMap = {};
+
 
     function init() {
 
-        _addInputListener(volControl, w.commands.opacity, virtualController);
-        _addInputListener(modControl, w.commands.scroll);
-        _addInputListener(bendControl, w.commands.stickyScroll);
-
-        // mimic the pitchbend physical control behavior:
-        // jump to middle position when leaving mouse button on the bend slider
-        bendControl.addEventListener('mouseup', function (e) {
-            w.commands.stickyScroll(bendControl.value = 64);
+        _bindRange(volControl, function (data) {
+            w.commands.volume({
+                el: virtualController,
+                velocity: data.velocity
+            });
         });
 
-        knobControls.forEach(function (node, index, collection) {
-            var command = w.constants.knobCommandMap[index];
-            if (command) {
-                _addInputListener(node, w.commands[command], virtualController);
-            }
+        _bindRange(modControl, function (data) {
+            w.commands.modulation({
+                velocity: data.velocity
+            });
         });
 
-        //keyControls.forEach(function (node, index) {
-        //    node.style.backgroundColor = w.constants.rainbowColors[index % w.constants.rainbowColors.length];
-        //});
+        // add 'idlePosition' to mimic the pitchbend physical control behavior
+        _bindRange(bendControl, function (data) {
+            w.commands.pitchBend({
+                velocity: data.velocity
+            });
+        }, 64);
 
-        _addAllOpacityMouseListeners();
-
-        _addMouseListeners(
-            keyControls,
-            function (node, index) {
-                w.commands.color({
-                    el: node,
-                    velocity: 60,
-                    color: keyElColorMap.get(node)
-                });
-            }, function (node, index) {
-                w.commands.color({
-                    el: node,
-                    velocity: 0,
-                    color: keyElColorMap.get(node)
+        knobControls.forEach(function (node, index) {
+            _bindRange(node, function (data) {
+                var command = 'knob' + (index + 1);
+                w.commands[command]({
+                    velocity: data.velocity,
+                    el: virtualController,
+                    echoEl: node
                 });
             });
-    }
-
-    function _addInputListener(inputEl, command, targetEl) {
-        inputEl.addEventListener('input', function (e) {
-            command(inputEl.value, targetEl);
         });
-    }
 
-    function _addAllOpacityMouseListeners() {
-        _addOpacityMouseListeners(padControls);
-        _addOpacityMouseListeners(keyControls);
-        _addOpacityMouseListeners(transportControls);
-    }
-
-    function _addOpacityMouseListeners(nodes) {
-        _addMouseListeners(
-            nodes,
-            opacityMouseListener.bind({
-                velocity: 60
-            }),
-            opacityMouseListener.bind({
-                velocity: 0
-            })
-        );
-    }
-
-    function opacityMouseListener(el, index) {
-        w.commands.opacity({
-            velocity: this.velocity,
-            el: el,
-            reverse: true
+        padControls.forEach(function (node, index) {
+            _bindTap(node, function (data) {
+                var command = 'pad' + (index + 1);
+                w.commands[command]({
+                    velocity: data.velocity,
+                    el: virtualController,
+                    echoEl: node
+                });
+            });
         });
-    }
 
-    function _addMouseListeners(nodes, onMouseDown, onMouseUp) {
-        nodes.forEach(function (node, index, collection) {
-            node.addEventListener('mousedown', onMouseDown.bind(this, node, index));
-            node.addEventListener('mouseup', onMouseUp.bind(this, node, index));
+        keyControls.forEach(function (node, index) {
+            _bindTap(node, function (data) {
+                w.commands.key({
+                    velocity: data.velocity,
+                    echoEl: node,
+                    index: index
+                });
+            });
         });
     }
 
     function appendTransform(options) {
-        appendFunctionListStyle('transform', options);
+        _appendFunctionListStyle('transform', options);
     }
 
     function appendFilter(options) {
-        appendFunctionListStyle('filter', options);
-    }
-
-    // el, name, value, unit
-    function appendFunctionListStyle(prop, options) {
-        var functionList,
-            functionListMapName = prop + 'FunctionListMap',
-            functionListString = '';
-
-        options.el = ensureElement(options.el);
-        this[functionListMapName] = this[functionListMapName] || new WeakMap();
-        functionList = this[functionListMapName].get(options.el) || {};
-        functionList[options.name] = options.value + (options.unit || '');
-        this[functionListMapName].set(options.el, functionList);
-
-        for (var n in functionList) {
-            functionListString += n + '(' + functionList[n] + ') ';
-        }
-        //w.utils.log(transformString);
-        options.el.style[prop] = functionListString;
+        _appendFunctionListStyle('filter', options);
     }
 
     function startContinuousRelativeScroll(options) {
@@ -163,27 +124,115 @@
     }
 
     function setBackgroundColor(options) {
-        ensureElement(options.el).style.backgroundColor = options.color;
+        _ensureElement(options.el).style.backgroundColor = options.color;
     }
 
     function setBackgroundImage(options) {
-        ensureElement(options.el).style.backgroundImage = 'url("' + options.imageUrl + '")';
+        _ensureElement(options.el).style.backgroundImage = 'url("' + options.imageUrl + '")';
     }
 
     function setOpacity(options) {
-        ensureElement(options.el).style.opacity = options.opacity;
+        _ensureElement(options.el).style.opacity = options.opacity;
     }
 
-    function ensureElement(el) {
+    function setInputValue(options) {
+        if (options.el) {
+            options.el.value = options.value;
+        }
+    }
+
+    function setText(options) {
+        options.el && (options.el.textContent = options.message);
+    }
+
+    function addOverlay(options) {
+        var id = 'overlay-' + options.id,
+            el;
+        if (overlayMap[id]) {
+            return;
+        }
+        el = d.createElement('div');
+        el.setAttribute('class', 'overlay');
+        d.body.appendChild(el);
+        // trigger css transition
+        el.style.backgroundColor = options.color;
+        el.style.opacity = options.opacity;
+        overlayMap[id] = el;
+    }
+
+    function removeOverlay(options) {
+        var id = 'overlay-' + options.id;
+        var el = overlayMap[id];
+        if (!el) {
+            return;
+        }
+        d.body.removeChild(el);
+        delete overlayMap[id];
+    }
+
+    //function isRangeInput(el) {
+    //    return el && el instanceof w.HTMLInputElement && el.type === 'range';
+    //}
+
+
+    function _appendFunctionListStyle(prop, options) {
+        var functionList,
+            functionListMapName = prop + 'FunctionListMap',
+            functionListString = '';
+
+        options.el = _ensureElement(options.el);
+        this[functionListMapName] = this[functionListMapName] || new WeakMap();
+        functionList = this[functionListMapName].get(options.el) || {};
+        functionList[options.name] = options.value + (options.unit || '');
+        this[functionListMapName].set(options.el, functionList);
+
+        for (var n in functionList) {
+            functionListString += n + '(' + functionList[n] + ') ';
+        }
+        //w.utils.log(transformString);
+        options.el.style[prop] = functionListString;
+    }
+
+
+    function _bindRange(inputEl, callback, idlePosition) {
+        inputEl.addEventListener('input', function (e) {
+            callback({
+                velocity: inputEl.value
+            });
+        });
+        if (!w.utils.isUndefined(idlePosition)) {
+            // jump to middle position when leaving mouse button
+            inputEl.addEventListener('mouseup', function (e) {
+                callback({
+                    velocity: (inputEl.value = 64)
+                });
+            });
+        }
+    }
+
+    function _bindTap(el, callback) {
+        el.addEventListener('mousedown', callback.bind(this, {
+            velocity: 60
+        }));
+        el.addEventListener('mouseup', callback.bind(this, {
+            velocity: 0
+        }));
+    }
+
+    function _ensureElement(el) {
         return el || d.body;
     }
 
 
     w.dom = {
         el: {
-            overlay: overlay,
             virtualController: virtualController,
             virtualControllerDisplay: virtualControllerDisplay,
+            displayLogChannel: displayLogChannel,
+            displayLogCmd: displayLogCmd,
+            displayLogNote: displayLogNote,
+            displayLogType: displayLogType,
+            displayLogVelocity: displayLogVelocity,
             bendControl: bendControl,
             modControl: modControl,
             volControl: volControl,
@@ -199,7 +248,12 @@
         setBackgroundColor: setBackgroundColor,
         setBackgroundImage: setBackgroundImage,
         setOpacity: setOpacity,
-        startContinuousRelativeScroll: startContinuousRelativeScroll
+        startContinuousRelativeScroll: startContinuousRelativeScroll,
+        setInputValue: setInputValue,
+        setText: setText,
+        addOverlay: addOverlay,
+        removeOverlay: removeOverlay
     };
 
-})(window, document);
+})
+(window, document);

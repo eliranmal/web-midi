@@ -13,22 +13,19 @@
         36, 38, 42, 46
     ];
 
-    const knobNoteMap = [];
+    const knobNoteMap = [
+        74, 71, 91, 93,
+        73, 72, 5, 84
+    ];
 
-    // todo - find all transport notes
     const transportNoteMap = [
         113,    // loop
-        null,   // rewind
-        null,   // forward
-        null,   // stop
-        null,   // play
-        null    // record
+        114,    // rewind
+        115,    // forward
+        116,    // stop
+        117,    // play
+        118     // record
     ];
-
-    const knobCommandMap = [
-        'rotate', 'zoom', 'panX', 'panY'
-    ];
-
 
     const rainbowColors = [
         '#f44336',
@@ -44,8 +41,8 @@
     w.constants = {
         keyNoteMap: keyNoteMap,
         padNoteMap: padNoteMap,
+        knobNoteMap: knobNoteMap,
         transportNoteMap: transportNoteMap,
-        knobCommandMap: knobCommandMap,
         rainbowColors: rainbowColors
     };
 

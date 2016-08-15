@@ -1,10 +1,131 @@
 (function (w, d) {
 
-    function _scroll(velocity) {
+    function volume(options) {
+        _echoRange(options);
+        _opacity(options);
+    }
+
+    function pitchBend(options) {
+        _echoRange(options);
+        _stickyScroll(options);
+    }
+
+    function modulation(options) {
+        _echoRange(options);
+        _scroll(options);
+    }
+
+    
+    function knob1(options) {
+        _echoRange(options);
+        _rotate(options);
+    }
+
+    function knob2(options) {
+        _echoRange(options);
+        _zoom(options);
+    }
+
+    function knob3(options) {
+        _echoRange(options);
+        _panX(options);
+    }
+
+    function knob4(options) {
+        _echoRange(options);
+        _panY(options);
+    }
+
+    function knob5(options) {
+        _echoRange(options);
+    }
+
+    function knob6(options) {
+        _echoRange(options);
+    }
+
+    function knob7(options) {
+        _echoRange(options);
+    }
+
+    function knob8(options) {
+        _echoRange(options);
+    }
+
+
+    function pad1(options) {
+        _echoTap(options);
+    }
+
+    function pad2(options) {
+        _echoTap(options);
+    }
+
+    function pad3(options) {
+        _echoTap(options);
+    }
+
+    function pad4(options) {
+        _echoTap(options);
+    }
+
+    function pad5(options) {
+        _echoTap(options);
+    }
+
+    function pad6(options) {
+        _echoTap(options);
+    }
+
+    function pad7(options) {
+        _echoTap(options);
+    }
+
+    function pad8(options) {
+        _echoTap(options);
+    }
+
+
+
+    function key(options) {
+        var color;
+        _echoTap(options);
+        if (options.velocity > 0) {
+            color = w.dom.keyElColorMap.get(options.echoEl);
+            w.dom.addOverlay({
+                id: options.index,
+                color: color,
+                opacity: _getOpacityValue(options)
+            });
+        } else {
+            w.dom.removeOverlay({
+                id: options.index
+            });
+        }
+    }
+
+
+
+    function _echoTap(options) {
+        _opacity({
+            el: options.echoEl,
+            velocity: options.velocity,
+            reverse: true
+        });
+    }
+
+    function _echoRange(options) {
+        w.dom.setInputValue({
+            el: options.echoEl,
+            value: options.velocity
+        });
+    }
+
+    function _scroll(options) {
         var docHeight = d.body.offsetHeight,
             y = w.utils.fromMidiRange({
                 scale: docHeight,
-                velocity: velocity,
+                velocity: options.velocity,
                 reverse: true,
                 round: true
             });
@@ -12,63 +133,63 @@
         w.scrollTo(0, y);
     }
 
-    function _stickyScroll(velocity) {
+    function _stickyScroll(options) {
         w.dom.startContinuousRelativeScroll({
-            velocity: velocity,
+            velocity: options.velocity,
             mean: 64 // todo - redundant?
         });
     }
 
-    function _rotate(velocity, el) {
+    function _rotate(options) {
         var degrees = w.utils.fromMidiRange({
             scale: 360,
-            velocity: velocity,
+            velocity: options.velocity,
             round: true
         });
         //w.utils.log('degrees', degrees);
         w.dom.appendTransform({
-            el: el,
+            el: options.el,
             name: 'rotate',
             value: degrees,
             unit: 'deg'
         });
     }
 
-    function _zoom(vel, el) {
+    function _zoom(options) {
         var scaleValue = w.utils.fromMidiRange({
             scale: 5,
-            velocity: vel
+            velocity: options.velocity
         });
-        scaleValue = Math.pow(+scaleValue + .5, 2).toFixed(3);
+        scaleValue = Math.pow(+scaleValue + 0.5, 2).toFixed(3);
 
         //w.utils.log('scale', scale);
         w.dom.appendTransform({
-            el: el,
+            el: options.el,
             name: 'scale',
             value: scaleValue
         });
     }
 
-    function _saturate(velocity, el) {
+    function _saturate(options) {
         var saturation = w.utils.fromMidiRange({
             scale: 100,
-            velocity: velocity,
+            velocity: options.velocity,
             trim: 0
         });
         //w.utils.log('saturation', saturation);
         w.dom.appendFilter({
-            el: el,
+            el: options.el,
             name: 'saturate',
             value: saturation,
             unit: '%'
         });
     }
 
-    function _image(velocity) {
+    function _image(options) {
         var imageUrl;
-        if (velocity === 0) {
+        if (options.velocity === 0) {
             imageUrl = 'http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/sativa.png';
-        } else if (velocity === 127) {
+        } else if (options.velocity === 127) {
             imageUrl = 'http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png';
         }
         w.dom.setBackgroundImage({
@@ -76,29 +197,29 @@
         });
     }
 
-    function _translate(vel, el, axis) {
+    function _translate(axis, options) {
         var scale = 500,
             translation = w.utils.fromMidiRange({
                 scale: scale,
-                velocity: vel,
+                velocity: options.velocity,
                 trim: 3
             });
         translation = +translation - scale / 2;
         //w.utils.log('translate', translate);
         w.dom.appendTransform({
-            el: el,
+            el: options.el,
             name: 'translate' + axis,
             value: translation,
             unit: 'px'
         });
     }
 
-    function _panX(vel, el) {
-        _translate(vel, el, 'X');
+    function _panX(options) {
+        _translate('X', options);
     }
 
-    function _panY(vel, el) {
-        _translate(vel, el, 'Y');
+    function _panY(options) {
+        _translate('Y', options);
     }
 
     function _color(options) {
@@ -106,27 +227,30 @@
             options.color = 'transparent';
         }
         w.dom.setBackgroundColor({
-            el: w.dom.el.overlay, // todo - extract to options.targetEl (add sourceEl)
+            el: options.el,
             color: options.color
         });
     }
 
     function _opacity(options) {
-        var opacityValue;
+        var opacityValue = _getOpacityValue(options);
+        //w.utils.log('opacity', opacity);
+        w.dom.setOpacity({
+            el: options.el,
+            opacity: opacityValue
+        });
+    }
+
+    function _getOpacityValue(options) {
         if (options.reverse) {
             options.velocity = w.utils.reverseMidiRange(options.velocity);
         }
-        opacityValue = w.utils.fromMidiRange({ // change to fromRange - pass fromRange [min, max] and toRange (min/max)
+        return w.utils.fromMidiRange({ // change to fromRange - pass fromRange [min, max] and toRange (min/max)
             // min / max
             scale: 1,
             // value
             velocity: options.velocity,
             trim: 3
-        });
-        //w.utils.log('opacity', opacity);
-        w.dom.setOpacity({
-            el: options.el,
-            opacity: opacityValue
         });
     }
 
@@ -141,7 +265,28 @@
         saturate: _saturate,
         image: _image,
         scroll: _scroll,
-        stickyScroll: _stickyScroll
+        stickyScroll: _stickyScroll,
+
+        volume: volume,
+        pitchBend: pitchBend,
+        modulation: modulation,
+        key: key,
+        knob1: knob1,
+        knob2: knob2,
+        knob3: knob3,
+        knob4: knob4,
+        knob5: knob5,
+        knob6: knob6,
+        knob7: knob7,
+        knob8: knob8,
+        pad1: pad1,
+        pad2: pad2,
+        pad3: pad3,
+        pad4: pad4,
+        pad5: pad5,
+        pad6: pad6,
+        pad7: pad7,
+        pad8: pad8
     };
 
 })(window, document);

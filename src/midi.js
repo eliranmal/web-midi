@@ -39,19 +39,20 @@
             channel = data[0] & 0xf,
             type = data[0] & 0xf0, // channel agnostic message type. Thanks, Phil Burk.
             note = data[1],
-            velocity = data[2];
+            velocity = data[2],
+            midiMessageData = {
+                cmd: cmd,
+                channel: channel,
+                type: type,
+                note: note,
+                velocity: velocity
+            };
 
-        _handleMidiMessage({
-            cmd: cmd,
-            channel: channel,
-            type: type,
-            note: note,
-            velocity: velocity
-        });
+        _handleMidiMessage(midiMessageData);
 
         var message = 'channel: ' + channel + ', cmd: ' + cmd + ', type: ' + type + '\n' + 'note: ' + note + ', velocity: ' + velocity;
         w.utils.log(message);
-        _show(message);
+        _display(midiMessageData);
     }
 
     function _handleMidiMessage(midiMessageData) {
@@ -62,19 +63,17 @@
             //case 128: // note off
             //    break;
             case 224: // pitch bend
-                _domUpdateDecorator({
-                    actionFn: w.commands.stickyScroll,
-                    feedbackEl: w.dom.el.bendControl
-                }, midiMessageData);
-
+                w.commands.pitchBend({
+                    velocity: midiMessageData.velocity,
+                    echoEl: w.dom.el.bendControl
+                });
                 break;
             case 176: // range controls (knobs/switches/faders)
-                switch (channel) {
+                switch (midiMessageData.channel) {
                     case 15:
                         _handleTransportTrigger(midiMessageData);
                         break;
-                    default:
-                        // todo - find out the channels of modulation/volume and knobs
+                    case 0:
                         _handleRangeTrigger(midiMessageData);
                         break;
                 }
@@ -84,89 +83,49 @@
 
     function _handleTransportTrigger(midiMessageData) {
         // todo - use transportNoteMap constant, with util function to map these contants to actions (and use that util everywhere)
-        //w.constants.transportNoteMap.indexOf(midiMessageData.note);
+        var transportIndex = w.constants.transportNoteMap.indexOf(midiMessageData.note);
+        w.utils.log('transportIndex', transportIndex);
         switch (midiMessageData.note) {
             case 113: // loop
-                _domUpdateDecorator({
-                    actionFn: w.commands.image
-                }, midiMessageData);
+                w.commands.image({
+                    velocity: midiMessageData.velocity
+                });
                 break;
         }
     }
 
     function _handleRangeTrigger(midiMessageData) {
-        switch (midiMessageData.note) {
+        var knobIndex,
+            note = midiMessageData.note,
+            velocity = midiMessageData.velocity;
+
+        switch (note) {
             case 1: // modulation
-                _domUpdateDecorator({
-                    actionFn: w.commands.scroll,
-                    targetEl: w.dom.el.modControl
-                }, midiMessageData);
+                w.commands.modulation({
+                    velocity: velocity,
+                    echoEl: w.dom.el.modControl
+                });
                 break;
             case 7: // volume
-                _domUpdateDecorator({
-                    actionFn: w.commands.opacity,
-                    feedbackEl: w.dom.el.volControl
-                }, midiMessageData);
+                w.commands.volume({
+                    el: w.dom.el.virtualController,
+                    velocity: velocity,
+                    echoEl: w.dom.el.volControl
+                });
                 break;
-
-
-            case 74: // knob 1
-                _domUpdateDecorator({
-                    actionFn: w.commands.rotate,
-                    feedbackEl: w.dom.el.knobControls[0],
-                    targetEl: w.dom.el.virtualController
-                }, midiMessageData);
-                break;
-            case 71: // knob 2
-                _domUpdateDecorator({
-                    actionFn: w.commands.zoom,
-                    feedbackEl: w.dom.el.knobControls[1],
-                    targetEl: w.dom.el.virtualController
-                }, midiMessageData);
-                break;
-            case 91: // knob 3
-                _domUpdateDecorator({
-                    actionFn: w.commands.panX,
-                    feedbackEl: w.dom.el.knobControls[2],
-                    targetEl: w.dom.el.virtualController
-                }, midiMessageData);
-                break;
-            case 93: // knob 4
-                _domUpdateDecorator({
-                    actionFn: w.commands.panY,
-                    feedbackEl: w.dom.el.knobControls[3],
-                    targetEl: w.dom.el.virtualController
-                }, midiMessageData);
-                break;
-            case 73: // knob 5
-                _domUpdateDecorator({
-                    actionFn: null,
-                    feedbackEl: w.dom.el.knobControls[4],
-                    targetEl: null
-                }, midiMessageData);
-                break;
-            case 72: // knob 6
-                _domUpdateDecorator({
-                    actionFn: null,
-                    feedbackEl: w.dom.el.knobControls[5],
-                    targetEl: null
-                }, midiMessageData);
-                break;
-            case 5:  // knob 7
-                _domUpdateDecorator({
-                    actionFn: null,
-                    feedbackEl: w.dom.el.knobControls[6],
-                    targetEl: null
-                }, midiMessageData);
-                break;
-            case 84: // knob 8
-                _domUpdateDecorator({
-                    actionFn: null,
-                    feedbackEl: w.dom.el.knobControls[7],
-                    targetEl: null
-                }, midiMessageData);
+            default:
+                // knobs
+                knobIndex = w.constants.knobNoteMap.indexOf(note);
+                if (knobIndex !== -1) {
+                    w.commands['knob' + (knobIndex + 1)]({
+                        velocity: velocity,
+                        el: w.dom.el.virtualController,
+                        echoEl: w.dom.el.knobControls[knobIndex]
+                    });
+                }
                 break;
         }
+
     }
 
     function _handleNoteOn(midiMessageData) {
@@ -181,46 +140,47 @@
     }
 
     function _handleKeyTrigger(midiMessageData) {
-        // todo - extract to util
-        var el = w.dom.el.keyControls[w.constants.keyNoteMap.indexOf(midiMessageData.note)],
-            color = w.dom.keyElColorMap.get(el);
-        w.commands.color({
-            el: el,
+        var keyIndex = w.constants.keyNoteMap.indexOf(midiMessageData.note),
+            keyEl = w.dom.el.keyControls[keyIndex];
+        w.commands.key({
             velocity: midiMessageData.velocity,
-            color: color,
-            reverse: true
-        });
-        w.commands.opacity({
-            el: el,
-            velocity: midiMessageData.velocity,
-            reverse: true
-            //domEcho: true/el
+            echoEl: keyEl,
+            index: keyIndex
         });
     }
 
     function _handlePadTrigger(midiMessageData) {
-        // todo - extract to util
-        var targetEl = w.dom.el.padControls[w.constants.padNoteMap.indexOf(midiMessageData.note)];
-        _domUpdateDecorator({
-            actionFn: w.commands.opacity,
-            targetEl: targetEl,
-            reverseVelocity: true
-        }, midiMessageData);
+        var padIndex = w.constants.padNoteMap.indexOf(midiMessageData.note),
+            padEl = w.dom.el.padControls[padIndex];
+        w.commands['pad' + (padIndex + 1)]({
+            velocity: midiMessageData.velocity,
+            el: padEl,
+            echoEl: padEl
+        });
     }
 
 
-    function _domUpdateDecorator(options, midiMessageData) {
-        var vel = midiMessageData.velocity;
-        if (options.reverseVelocity) {
-            vel = 127 - vel;
-        }
-        options.actionFn && options.actionFn(vel, options.targetEl);
-        options.feedbackEl && (options.feedbackEl.value = vel);
-    }
-
-    function _show(message) {
-        var el = w.dom.el.virtualControllerDisplay;
-        el && (el.textContent = message);
+    function _display(midiMessageData) {
+        w.dom.setText({
+            el: w.dom.el.displayLogChannel,
+            message: midiMessageData.channel
+        });
+        w.dom.setText({
+            el: w.dom.el.displayLogCmd,
+            message: midiMessageData.cmd
+        });
+        w.dom.setText({
+            el: w.dom.el.displayLogType,
+            message: midiMessageData.type
+        });
+        w.dom.setText({
+            el: w.dom.el.displayLogNote,
+            message: midiMessageData.note
+        });
+        w.dom.setText({
+            el: w.dom.el.displayLogVelocity,
+            message: midiMessageData.velocity
+        });
     }
 
 

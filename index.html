@@ -6,7 +6,6 @@
     <link href="styles/styles.css" rel="stylesheet" >
 </head>
 <body>
-<div class="overlay"></div>
 <div class="wrapper block">
     <div class="virtual-controller centered">
         <div>
@@ -15,7 +14,28 @@
                 <input type="range" min="0" max="127" value="127" id="vol-control"/>
             </label>
             <div>
-                <pre class="display"></pre>
+                <div class="display">
+                    <div class="channel">
+                        <div class="label">channel</div>
+                        <div class="log"></div>
+                    </div>
+                    <div class="cmd">
+                        <div class="label">cmd</div>
+                        <div class="log"></div>
+                    </div>
+                    <div class="type">
+                        <div class="label">type</div>
+                        <div class="log"></div>
+                    </div>
+                    <div class="note">
+                        <div class="label">note</div>
+                        <div class="log"></div>
+                    </div>
+                    <div class="velocity">
+                        <div class="label">velocity</div>
+                        <div class="log"></div>
+                    </div>
+                </div>
                 <div class="transport">
                     <div class="btn-control-1">loop</div>
                     <div class="btn-control-2">rew</div>
