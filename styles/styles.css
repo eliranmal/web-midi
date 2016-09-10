@@ -33,11 +33,12 @@ pre {
 
 .overlay {
     z-index: 0;
-
-    /* todo - make the transition on overlays work (add multiple overlays per key when dom is ready, only toggle opacity on midi key trigger) */
-    /*opacity: 0;*/
+    opacity: 0;
+    /* todo - add all overlays to the dom on init, than just change opacity */
     /*-webkit-transition: background-color 500ms, opacity 500ms;*/
     /*transition: background-color 500ms, opacity 500ms;*/
+    /*-webkit-transition: opacity 500ms;*/
+    /*transition: opacity 500ms;*/
 }
 
 .fake-height {
