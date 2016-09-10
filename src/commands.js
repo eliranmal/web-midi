@@ -15,7 +15,32 @@
         _scroll(options);
     }
 
-    
+
+    function loop(options) {
+        _image(options);
+    }
+
+    function rewind(options) {
+
+    }
+
+    function forward(options) {
+
+    }
+
+    function stop(options) {
+
+    }
+
+    function play(options) {
+
+    }
+
+    function record(options) {
+
+    }
+
+
     function knob1(options) {
         _echoRange(options);
         _rotate(options);
@@ -256,20 +281,15 @@
 
 
     w.commands = {
-        rotate: _rotate,
-        zoom: _zoom,
-        panX: _panX,
-        panY: _panY,
-        color: _color,
-        opacity: _opacity,
-        saturate: _saturate,
-        image: _image,
-        scroll: _scroll,
-        stickyScroll: _stickyScroll,
-
         volume: volume,
         pitchBend: pitchBend,
         modulation: modulation,
+        loop: loop,
+        rewind: rewind,
+        forward: forward,
+        stop: stop,
+        play: play,
+        record: record,
         key: key,
         knob1: knob1,
         knob2: knob2,

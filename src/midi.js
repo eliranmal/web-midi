@@ -68,7 +68,7 @@
                     echoEl: w.dom.el.bendControl
                 });
                 break;
-            case 176: // range controls (knobs/switches/faders)
+            case 176: // knobs / switches (transport controls) / faders
                 switch (midiMessageData.channel) {
                     case 15:
                         _handleTransportTrigger(midiMessageData);
@@ -82,15 +82,13 @@
     }
 
     function _handleTransportTrigger(midiMessageData) {
-        // todo - use transportNoteMap constant, with util function to map these contants to actions (and use that util everywhere)
-        var transportIndex = w.constants.transportNoteMap.indexOf(midiMessageData.note);
-        w.utils.log('transportIndex', transportIndex);
-        switch (midiMessageData.note) {
-            case 113: // loop
-                w.commands.image({
-                    velocity: midiMessageData.velocity
-                });
-                break;
+        var command,
+            transportIndex = w.constants.transportNoteMap.indexOf(midiMessageData.note);
+        if (transportIndex !== -1) {
+            command = w.constants.transportCommandMap[transportIndex];
+            w.commands[command]({
+                velocity: midiMessageData.velocity
+            });
         }
     }
 

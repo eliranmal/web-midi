@@ -27,6 +27,15 @@
         118     // record
     ];
 
+    const transportCommandMap = [
+        'loop',
+        'rewind',
+        'forward',
+        'stop',
+        'play',
+        'record'
+    ];
+
     const rainbowColors = [
         '#f44336',
         '#ff9800',
@@ -43,6 +52,7 @@
         padNoteMap: padNoteMap,
         knobNoteMap: knobNoteMap,
         transportNoteMap: transportNoteMap,
+        transportCommandMap: transportCommandMap,
         rainbowColors: rainbowColors
     };
 

@@ -57,9 +57,20 @@
             });
         }, 64);
 
+        transportControls.forEach(function (node, index) {
+            var command = w.constants.transportCommandMap[index];
+            _bindSwitchTap(node, function (data) {
+                w.commands[command]({
+                    velocity: data.velocity,
+                    echoEl: node,
+                    index: index
+                });
+            });
+        });
+
         knobControls.forEach(function (node, index) {
+            var command = 'knob' + (index + 1);
             _bindRange(node, function (data) {
-                var command = 'knob' + (index + 1);
                 w.commands[command]({
                     velocity: data.velocity,
                     el: virtualController,
@@ -213,6 +224,15 @@
     function _bindTap(el, callback) {
         el.addEventListener('mousedown', callback.bind(this, {
             velocity: 60
+        }));
+        el.addEventListener('mouseup', callback.bind(this, {
+            velocity: 0
+        }));
+    }
+
+    function _bindSwitchTap(el, callback) {
+        el.addEventListener('mousedown', callback.bind(this, {
+            velocity: 127
         }));
         el.addEventListener('mouseup', callback.bind(this, {
             velocity: 0
