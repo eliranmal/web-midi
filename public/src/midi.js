@@ -87,7 +87,8 @@
         if (transportIndex !== -1) {
             command = w.constants.transportCommandMap[transportIndex];
             w.commands[command]({
-                velocity: midiMessageData.velocity
+                velocity: midiMessageData.velocity,
+                index: transportIndex
             });
         }
     }

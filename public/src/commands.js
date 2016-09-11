@@ -21,23 +21,23 @@
     }
 
     function rewind(options) {
-
+        _image(options);
     }
 
     function forward(options) {
-
+        _image(options);
     }
 
     function stop(options) {
-
+        _image(options);
     }
 
     function play(options) {
-
+        _image(options);
     }
 
     function record(options) {
-
+        _beacon(options);
     }
 
 
@@ -111,7 +111,6 @@
     }
 
 
-
     function key(options) {
         var color;
         _echoTap(options);
@@ -128,7 +127,6 @@
             });
         }
     }
-
 
 
     function _echoTap(options) {
@@ -163,6 +161,15 @@
             velocity: options.velocity,
             mean: 64 // todo - redundant?
         });
+    }
+
+    function _beacon(options) {
+        if (options.velocity === 127) {
+            w.xhr.request({
+                url: '/beacon/broadcast',
+                method: 'POST'
+            });
+        }
     }
 
     function _rotate(options) {
@@ -211,15 +218,22 @@
     }
 
     function _image(options) {
-        var imageUrl;
+        var imageUrl, backgroundImageOptions,
+            index = options.index;
         if (options.velocity === 0) {
-            imageUrl = 'http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/sativa.png';
+            imageUrl = '/images/patterns/sativa.png'; // default
         } else if (options.velocity === 127) {
-            imageUrl = 'http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png';
+            imageUrl = w.constants.transportImageMap[index];
         }
-        w.dom.setBackgroundImage({
-            imageUrl: imageUrl
-        });
+        if (imageUrl) {
+            backgroundImageOptions = {
+                imageUrl: imageUrl
+            };
+            w.dom.setBackgroundImage(backgroundImageOptions);
+            if (index === 0) { // this is not a pattern image
+                w.scrollTo(0, 0);
+            }
+        }
     }
 
     function _translate(axis, options) {

@@ -3,13 +3,7 @@ body {
     padding: 0;
     font: bold 12px/2 monospace;
     color: #999;
-    /* default state */
-    /* opacity: 0; */
-    /*
-    background-image: url('http://subtlepatterns.com/patterns/crissXcross.png');
-    background-image: url('http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png');
-    */
-    background-image: url('http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/sativa.png');
+    background-image: url('/images/patterns/sativa.png');
 }
 
 div,
@@ -17,6 +11,16 @@ pre {
     box-sizing: border-box;
     margin: 0;
 }
+
+/*
+#fullscreen {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    cursor: pointer;
+    opacity: .3;
+}
+*/
 
 .wrapper,
 .overlay {

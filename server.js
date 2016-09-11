@@ -2,12 +2,17 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const beacon = require('./app/beacon');
+
 app.use(express.static('public'));
 
-//app.get('/', function (request, response) {
-//    //response.send('Hello from Express!');
-//    response.render('Hello from Express!');
-//});
+app.post('/beacon/broadcast', function (request, response) {
+    beacon.broadcast();
+    response.end(JSON.stringify({
+        status: 200,
+        success: 'beacon advertised successfully'
+    }));
+});
 
 app.listen(port, function (err) {
     if (err) {

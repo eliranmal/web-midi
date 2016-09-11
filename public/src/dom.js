@@ -3,7 +3,8 @@
     var relativeScrollTimerId,
         tickScrollDistance = 10;
 
-    var virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
+    var wrapper = d.querySelector('.wrapper'),
+        virtualControllerDisplay = d.querySelector('.virtual-controller .display'),
         displayLogChannel = virtualControllerDisplay.querySelector('.channel .log'),
         displayLogCmd = virtualControllerDisplay.querySelector('.cmd .log'),
         displayLogType = virtualControllerDisplay.querySelector('.type .log'),
@@ -99,6 +100,13 @@
                 });
             });
         });
+
+
+/*
+        document.querySelector('#fullscreen').addEventListener('click', function (e) {
+            document.body.webkitRequestFullScreen();
+        });
+*/
     }
 
     function appendTransform(options) {
@@ -246,6 +254,7 @@
 
     w.dom = {
         el: {
+            wrapper: wrapper,
             virtualController: virtualController,
             virtualControllerDisplay: virtualControllerDisplay,
             displayLogChannel: displayLogChannel,

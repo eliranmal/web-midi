@@ -46,6 +46,14 @@
         '#9c27b0'
     ];
 
+    const transportImageMap = [
+        '/images/intellij-idea.png',
+        '/images/patterns/footer_lodyas.png',
+        '/images/patterns/crissXcross.png',
+        '/images/patterns/congruent_outline.png',
+        '/images/patterns/grey_wash_wall.png'
+    ];
+
 
     w.constants = {
         keyNoteMap: keyNoteMap,
@@ -53,6 +61,7 @@
         knobNoteMap: knobNoteMap,
         transportNoteMap: transportNoteMap,
         transportCommandMap: transportCommandMap,
+        transportImageMap: transportImageMap,
         rainbowColors: rainbowColors
     };
 

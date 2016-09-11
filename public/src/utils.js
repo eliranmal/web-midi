@@ -26,12 +26,22 @@
         return typeof value === 'undefined';
     }
 
+    function runCallback(func, context) {
+        if (typeof func === 'function') {
+            try {
+                func.apply(context, Array.prototype.slice.call(arguments, 2));
+            } catch (exc) {
+                _err('failed to run callback', exc);
+            }
+        }
+    }
 
     w.utils = {
         log: log,
         fromMidiRange: fromMidiRange,
         reverseMidiRange: reverseMidiRange,
-        isUndefined: isUndefined
+        isUndefined: isUndefined,
+        runCallback: runCallback
     };
 
 })(window);
