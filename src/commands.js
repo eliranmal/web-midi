@@ -212,7 +212,7 @@
         var imageUrl, backgroundImageOptions,
             index = options.index;
         if (options.velocity === 0) {
-            imageUrl = './images/patterns/sativa.png'; // default
+            imageUrl = '//images/patterns/sativa.png'; // default
         } else if (options.velocity === 127) {
             imageUrl = w.constants.transportImageMap[index];
         }
