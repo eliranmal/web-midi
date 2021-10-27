@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "an experiment with midi and the web",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "gh-pages": "^3.2.3"
+  },
   "devDependencies": {},
   "scripts": {
     "start": "npx serve public",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -b gh-deploy -d public"
   },
   "repository": {
     "type": "git",
