@@ -3,7 +3,7 @@ body {
     padding: 0;
     font: bold 12px/2 monospace;
     color: #999;
-    background-image: url('/web-midi/images/patterns/sativa.png');
+    background-image: url('../images/patterns/sativa.png');
 }
 
 div,

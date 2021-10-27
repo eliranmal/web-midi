@@ -46,11 +46,13 @@
         '#9c27b0'
     ];
 
+    const defaultTransportImage = 'images/patterns/sativa.png'
+
     const transportImageMap = [
-        '/web-midi/images/patterns/footer_lodyas.png',
-        '/web-midi/images/patterns/crissXcross.png',
-        '/web-midi/images/patterns/congruent_outline.png',
-        '/web-midi/images/patterns/grey_wash_wall.png'
+        'images/patterns/footer_lodyas.png',
+        'images/patterns/crissXcross.png',
+        'images/patterns/congruent_outline.png',
+        'images/patterns/grey_wash_wall.png'
     ];
 
 
@@ -61,7 +63,8 @@
         transportNoteMap: transportNoteMap,
         transportCommandMap: transportCommandMap,
         transportImageMap: transportImageMap,
-        rainbowColors: rainbowColors
+        rainbowColors: rainbowColors,
+        defaultTransportImage: defaultTransportImage,
     };
 
 })(window);
