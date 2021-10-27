@@ -1,142 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>midi</title>
-    <link href="styles/styles.css" rel="stylesheet" >
+  <meta charset="UTF-8">
+  <title>midi</title>
+  <link href="styles/styles.css" rel="stylesheet" >
 </head>
 <body>
-<div class="wrapper block">
+  <div class="wrapper block">
     <!--<div id="fullscreen">fullscreen</div>-->
     <div class="virtual-controller centered">
+      <div>
+        <label>vol
+          <!-- <input type="range" min="0" max="127" value="0" id="vol-control" /> -->
+          <input type="range" min="0" max="127" value="127" id="vol-control"/>
+        </label>
         <div>
-            <label>vol
-                <!-- <input type="range" min="0" max="127" value="0" id="vol-control" /> -->
-                <input type="range" min="0" max="127" value="127" id="vol-control"/>
-            </label>
-            <div>
-                <div class="display">
-                    <div class="channel">
-                        <div class="label">channel</div>
-                        <div class="log"></div>
-                    </div>
-                    <div class="cmd">
-                        <div class="label">cmd</div>
-                        <div class="log"></div>
-                    </div>
-                    <div class="type">
-                        <div class="label">type</div>
-                        <div class="log"></div>
-                    </div>
-                    <div class="note">
-                        <div class="label">note</div>
-                        <div class="log"></div>
-                    </div>
-                    <div class="velocity">
-                        <div class="label">velocity</div>
-                        <div class="log"></div>
-                    </div>
-                </div>
-                <div class="transport">
-                    <div class="btn-control-1">loop</div>
-                    <div class="btn-control-2">rew</div>
-                    <div class="btn-control-3">fwd</div>
-                    <div class="btn-control-4">stop</div>
-                    <div class="btn-control-5">play</div>
-                    <div class="btn-control-6">rec</div>
-                </div>
+          <div class="display">
+            <div class="channel">
+              <div class="label">channel</div>
+              <div class="log"></div>
             </div>
-            <div class="knobs">
-                <div>
-                    <label>knob 1
-                        <input type="range" min="0" max="127" value="0" id="knob-control-1"/>
-                    </label>
-                    <label>knob 2
-                        <input type="range" min="0" max="127" value="0" id="knob-control-2"/>
-                    </label>
-                    <label>knob 3
-                        <input type="range" min="0" max="127" value="0" id="knob-control-3"/>
-                    </label>
-                    <label>knob 4
-                        <input type="range" min="0" max="127" value="0" id="knob-control-4"/>
-                    </label>
-                </div>
-                <div>
-                    <label>knob 5
-                        <input type="range" min="0" max="127" value="0" id="knob-control-5"/>
-                    </label>
-                    <label>knob 6
-                        <input type="range" min="0" max="127" value="0" id="knob-control-6"/>
-                    </label>
-                    <label>knob 7
-                        <input type="range" min="0" max="127" value="0" id="knob-control-7"/>
-                    </label>
-                    <label>knob 8
-                        <input type="range" min="0" max="127" value="0" id="knob-control-8"/>
-                    </label>
-                </div>
+            <div class="cmd">
+              <div class="label">cmd</div>
+              <div class="log"></div>
             </div>
-            <div class="pads">
-                <div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-                <div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+            <div class="type">
+              <div class="label">type</div>
+              <div class="log"></div>
             </div>
+            <div class="note">
+              <div class="label">note</div>
+              <div class="log"></div>
+            </div>
+            <div class="velocity">
+              <div class="label">velocity</div>
+              <div class="log"></div>
+            </div>
+          </div>
+          <div class="transport">
+            <div class="btn-control-1">loop</div>
+            <div class="btn-control-2">rew</div>
+            <div class="btn-control-3">fwd</div>
+            <div class="btn-control-4">stop</div>
+            <div class="btn-control-5">play</div>
+            <div class="btn-control-6">rec</div>
+          </div>
         </div>
-        <div>
-            <label>bend
-                <input type="range" min="0" max="127" value="64" id="bend-control"/>
+        <div class="knobs">
+          <div>
+            <label>knob 1
+              <input type="range" min="0" max="127" value="0" id="knob-control-1"/>
             </label>
-            <label>mod
-                <input type="range" min="0" max="127" value="0" id="mod-control"/>
+            <label>knob 2
+              <input type="range" min="0" max="127" value="0" id="knob-control-2"/>
             </label>
-            <div class="keys">
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="black"></div>
-                <div class="white"></div>
-                <div class="white"></div>
-            </div>
+            <label>knob 3
+              <input type="range" min="0" max="127" value="0" id="knob-control-3"/>
+            </label>
+            <label>knob 4
+              <input type="range" min="0" max="127" value="0" id="knob-control-4"/>
+            </label>
+          </div>
+          <div>
+            <label>knob 5
+              <input type="range" min="0" max="127" value="0" id="knob-control-5"/>
+            </label>
+            <label>knob 6
+              <input type="range" min="0" max="127" value="0" id="knob-control-6"/>
+            </label>
+            <label>knob 7
+              <input type="range" min="0" max="127" value="0" id="knob-control-7"/>
+            </label>
+            <label>knob 8
+              <input type="range" min="0" max="127" value="0" id="knob-control-8"/>
+            </label>
+          </div>
         </div>
+        <div class="pads">
+          <div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label>bend
+          <input type="range" min="0" max="127" value="64" id="bend-control"/>
+        </label>
+        <label>mod
+          <input type="range" min="0" max="127" value="0" id="mod-control"/>
+        </label>
+        <div class="keys">
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="black"></div>
+          <div class="white"></div>
+          <div class="white"></div>
+        </div>
+      </div>
     </div>
-</div>
-<div class="fake-height"></div>
+  </div>
+  <div class="fake-height"></div>
 
 
-<script src="src/constants.js"></script>
-<script src="src/utils.js"></script>
-<script src="src/xhr.js"></script>
-<script src="src/dom.js"></script>
-<script src="src/commands.js"></script>
-<script src="src/midi.js"></script>
-<script src="src/bootstrap.js"></script>
+  <script src="src/constants.js"></script>
+  <script src="src/utils.js"></script>
+  <script src="src/dom.js"></script>
+  <script src="src/commands.js"></script>
+  <script src="src/midi.js"></script>
+  <script src="src/bootstrap.js"></script>
 </body>
 </html>
