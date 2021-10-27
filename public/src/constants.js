@@ -47,10 +47,10 @@
     ];
 
     const transportImageMap = [
-        './images/patterns/footer_lodyas.png',
-        './images/patterns/crissXcross.png',
-        './images/patterns/congruent_outline.png',
-        './images/patterns/grey_wash_wall.png'
+        '//images/patterns/footer_lodyas.png',
+        '//images/patterns/crissXcross.png',
+        '//images/patterns/congruent_outline.png',
+        '//images/patterns/grey_wash_wall.png'
     ];
 
 
