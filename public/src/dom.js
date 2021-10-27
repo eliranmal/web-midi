@@ -147,7 +147,7 @@
     }
 
     function setBackgroundImage(options) {
-        _ensureElement(options.el).style.backgroundImage = 'url("' + options.imageUrl + '")';
+        _ensureElement(options.el).style.backgroundImage = 'url("' window.location.href + options.imageUrl + '")';
     }
 
     function setOpacity(options) {
