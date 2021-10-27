@@ -6,7 +6,7 @@
                 sysex: false
             }).then(_onMidiSuccess, _onMidiFailure);
         } else {
-            alert('on shit, your browser does not support MIDI. open this in chrome, will ya?');
+            alert('your browser does not support MIDI. visit https://caniuse.com/midi to see which browsers do :)');
         }
     }
 
