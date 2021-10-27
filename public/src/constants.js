@@ -47,7 +47,6 @@
     ];
 
     const transportImageMap = [
-        '/images/intellij-idea.png',
         '/images/patterns/footer_lodyas.png',
         '/images/patterns/crissXcross.png',
         '/images/patterns/congruent_outline.png',
