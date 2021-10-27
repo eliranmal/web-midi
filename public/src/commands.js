@@ -37,7 +37,7 @@
     }
 
     function record(options) {
-        _beacon(options);
+        _image(options);
     }
 
 
@@ -161,15 +161,6 @@
             velocity: options.velocity,
             mean: 64 // todo - redundant?
         });
-    }
-
-    function _beacon(options) {
-        if (options.velocity === 127) {
-            w.xhr.request({
-                url: '/beacon/broadcast',
-                method: 'POST'
-            });
-        }
     }
 
     function _rotate(options) {
