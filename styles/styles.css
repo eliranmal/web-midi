@@ -1,0 +1,259 @@
+body {
+    margin: 0;
+    padding: 0;
+    font: bold 12px/2 monospace;
+    color: #999;
+    background-image: url('/images/patterns/sativa.png');
+}
+
+div,
+pre {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+/*
+#fullscreen {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    cursor: pointer;
+    opacity: .3;
+}
+*/
+
+.wrapper,
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.wrapper {
+    z-index: 1;
+}
+
+.overlay {
+    z-index: 0;
+    opacity: 0;
+    /* todo - add all overlays to the dom on init, than just change opacity */
+    /*-webkit-transition: background-color 500ms, opacity 500ms;*/
+    /*transition: background-color 500ms, opacity 500ms;*/
+    /*-webkit-transition: opacity 500ms;*/
+    /*transition: opacity 500ms;*/
+}
+
+.fake-height {
+    width: 1px;
+    height: 10000px;
+    /*background: rainbow;*/
+}
+
+/* virtual midi controller */
+
+.virtual-controller {
+    height: 400px;
+    width: 1180px;
+    -webkit-user-select: none;
+}
+
+.virtual-controller > div {
+    padding: 1em;
+    height: 50%;
+}
+
+.virtual-controller > div > * {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.virtual-controller > div > div > div {
+    height: 50%;
+}
+
+.virtual-controller > div .keys {
+    margin-left: 5px;
+}
+
+.virtual-controller > div .keys > div {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.virtual-controller > div .keys .white,
+.virtual-controller > div .keys .black {
+    position: relative;
+}
+
+.virtual-controller > div .keys .white {
+    z-index: 10;
+    width: 50px;
+    height: 100%;
+    background-color: #fff;
+}
+
+.virtual-controller > div .keys .black {
+    z-index: 11;
+    top: -40%;
+    left: -25px;
+    width: 40px;
+    height: 60%;
+    background-color: #ccc;
+}
+
+.virtual-controller > div .keys .black + .white {
+    margin-left: -48px;
+}
+
+.virtual-controller label,
+.virtual-controller input {
+    width: 60px;
+    margin: 0;
+    padding: 0;
+}
+
+.virtual-controller label {
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+}
+
+.virtual-controller input[type="range"] {
+    height: calc(100% - 3em);
+    -webkit-appearance: slider-vertical;
+}
+
+.virtual-controller .display {
+    position: relative;
+    display: inline-block;
+    width: 300px;
+    height: calc(100% - 50px);
+    margin-bottom: 10px;
+    border: 3px solid;
+    padding: 1em;
+    vertical-align: middle;
+    font: 15px monospace;
+    color: #fff;
+    background-color: #ccc;
+    white-space: pre;
+}
+
+.virtual-controller .display > div {
+    position: absolute;
+}
+
+.virtual-controller .display > div.type {
+    top: 0;
+    bottom: 50%;
+    left: 0;
+    right: 66.666%;
+}
+
+.virtual-controller .display > div.note {
+    top: 0;
+    bottom: 50%;
+    left: 33.333%;
+    right: 33.333%;
+}
+
+.virtual-controller .display > div.channel {
+    top: 50%;
+    bottom: 0;
+    left: 0;
+    right: 66.666%;
+}
+
+.virtual-controller .display > div.cmd {
+    top: 50%;
+    bottom: 0;
+    left: 33.333%;
+    right: 33.333%;
+}
+
+.virtual-controller .display > div.velocity {
+    top: 0;
+    bottom: 0;
+    left: 66.666%;
+    right: 0;
+}
+
+.virtual-controller .display > div > div {
+    position: absolute;
+    width: 100%;
+}
+
+.virtual-controller .display > div .label {
+    top: 5px;
+    font-size: .8em;
+}
+
+.virtual-controller .display > div .log {
+    top: 20px;
+    font-size: 1.7em;
+}
+
+.virtual-controller .display > div.velocity .label {
+    top: 25px;
+}
+
+.virtual-controller .display > div.velocity .log {
+    top: 40px;
+    font-size: 3em;
+}
+
+
+.virtual-controller .transport {
+    height: 40px;
+}
+
+.virtual-controller .transport > div {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 3px solid #ccc;
+    line-height: 2.8;
+    cursor: pointer;
+}
+
+.virtual-controller .pads > div {
+    height: calc(50% - 5px);
+}
+
+.virtual-controller .pads > div:not(*:last-child) {
+    margin-bottom: 10px;
+}
+
+.virtual-controller .pads > div > div {
+    display: inline-block;
+    width: 80px;
+    /*height: calc(100% - 10px);*/
+    height: 100%;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+/* helpers */
+
+.block {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.block:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em;
+}
+
+.centered {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: normal;
+}
